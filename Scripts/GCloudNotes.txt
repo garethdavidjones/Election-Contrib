@@ -16,13 +16,13 @@ gsutil commands
     gsutil cp gs://my-bucket/*.txt .
 
 
+gcloud dataproc jobs submit pyspark --cluster cs123cluster9 \
+ideology.py
 
 Instructions: https://cloud.google.com/dataproc/cluster-web-interfaces
 
 gcloud compute ssh  --zone=us-central1-a \
   --ssh-flag="-D 1080" --ssh-flag="-N" --ssh-flag="-n" cs123cluster9-m
-
-
 
 Then In A Seperate Terminal:
 
@@ -30,6 +30,5 @@ Then In A Seperate Terminal:
     --proxy-server="socks5://localhost:1080" \
     --host-resolver-rules="MAP * 0.0.0.0 , EXCLUDE localhost" \
     --user-data-dir=/tmp/
-
 
 Navigate To http://cs123cluster9-m:8080
