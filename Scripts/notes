@@ -1,0 +1,45 @@
+
+
+Notes	
+
+    Ideas for Project:
+        Over Time:
+            How has campaign finance changed over the years
+
+        Comparing People:
+
+        Locations:
+
+        People:
+            How do people change over time:
+                How do these changes compare to other people?
+            Compare Ideology:
+
+        What kind of clusters:
+            Ignore to him:
+                Do they align to party 
+                Contribution Size
+                Industryhine
+
+	Objective:
+
+		Determine Political Contributions
+
+
+Terminology:
+    Entity Resolution
+
+        In a single cycle:
+            Deduplication
+                - If a person donated more than once in a given cycle
+            Record Linkage
+                - Weighted K-Partite Matching
+                    * NP Hard 
+                        > Succesive Bipartite Matching
+
+	Entity Resolution Resolved
+
+    find broken rows:
+
+        length of the split
+        np.where() 
