@@ -3,9 +3,6 @@ import csv
 from StringIO import StringIO
 import numpy as np
 
-#PRIMARY_FILE_PATH = 'gs://cs123data/Data/full_data.csv'
-PRIMARY_FILE_PATH = 'gs://cs123data/Data/contribDB_1980.csv'
-
 Col_Nums = {"cycle":0,"transaction_id":1,"transaction_type":2,"amount":3,"date":4,"bonica_cid":5,"contributor_name":6,"contributor_lname":7,
 			"contributor_fname":8,"contributor_mname":9,"contributor_suffix":10,"contributor_title":11,"contributor_ffname":12,"contributor_type":13,
 			"contributor_gender":14,"contributor_address":15,"contributor_city":16,"contributor_state":17,"contributor_zipcode":18,
@@ -26,9 +23,9 @@ def csv_parser(line):
         rv = [1]  #This row will be removed in data cleaning
         return rv
 
-def primary_data_cleaning():
+def primary_data_cleaning(file_path):
 
-    lines = sc.textFile(PRIMARY_FILE_PATH)
+    lines = sc.textFile(file_path)
     header = lines.first()
     rm = lines.filter(lambda x: x != header) # remove first line
 
@@ -152,7 +149,7 @@ def get_trend(x):
     for i in range(count):
         donations_dict = x[i][17]
         current_year = donations_dict.pop(2010) #assuming we're doing 2012
-        prev_years = sum(donations_dict.values())
+        prev_years = sum(donations_dict.values()) #weight years?
         percent_sum += (current_year / prev_years) 
 
     avg_percent = percent_sum / count
@@ -160,9 +157,9 @@ def get_trend(x):
     return avg_percent
 
 
-def similarity_algo(RDD, k):
+def similarity_algo(test, train, k):
     
-    pairs = RDD.cartesian(RDD)
+    pairs = test.cartesian(train)
     sim_pairs = pairs.map(get_similarity)
     top_sim = sim_pairs.map(lambda y: y.filter(lambda x: x[1][1] >= k)).collect() #Wow, I don't think this will work
     trends = top_sim.map(get_trend)
@@ -170,8 +167,6 @@ def similarity_algo(RDD, k):
     predictions = get_predictors.map(lambda x: x[0] * x[1][1])
 
     return predictions
-
-
 
 def main(RDD):
 
@@ -183,15 +178,32 @@ def main(RDD):
 if __name__ == '__main__':
 
     k = sys.argv[1]
-    #years_back = sys.argv[2]
-    #can yse the foreachfunction
+    cycles_back = sys.argv[2]
+
     sc = pyspark.SparkContext()
-    data = primary_data_cleaning()
-    keyVals = main(data)
-    
 
+    main_file_path = "gs://cs123data/Data/contribDB_"
+    test_file = "gs://cs123data/Data/contribDB_2012"
 
-    keyVals.saveAsTextFile("gs://cs123data/Output/first_attempt_2.txt")
+    first = True
+
+    for year in range(2012 - cycles_back * 2, 2012, 2):
+        filename = main_file_path + str(year) + '.csv'
+        
+        if(first):
+            train_data = primary_data_cleaning(filename)
+            first = False
+        else:
+            to_add = primary_data_cleaning(filename)
+            train_data = train_data.union(to_add)
+
+    keyVals = main(train_data)
+
+    test_data = primary_data_cleaning(test_file)
+
+    results = similarity_algo(test_data, train_data, k)
+
+    results.saveAsTextFile("gs://cs123data/Output/heres2hope.txt")
 
 #what to run: 
 #gs://cs123data/Scripts/full_works.py
