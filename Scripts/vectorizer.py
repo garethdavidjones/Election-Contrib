@@ -4,12 +4,6 @@ import csv
 from StringIO import StringIO
 from operator import add
 
-AMT_COL = 3
-OUTPUT_PATH = 'gs://cs123data/Output/'
-INPUT_PATH = 'gs://cs123data/Data/contribDB_1984.csv'
-CID_COL = 5
-TOP_K = 20
-CONTR_CF = 36
 
 '''
 
@@ -121,10 +115,10 @@ def csv_parser(line):
 
     try:
         rv = list(csv.reader(StringIO(line), delimiter=","))[0]
-        rv[Col_Nums["amount"]] = float(rv[Col_Nums["amount"]])
+        rv[Col_Nums["amount"]] = abs(float(rv[Col_Nums["amount"]]))
         rv[Col_Nums["contributor_cfscore"]] = float(rv[Col_Nums["contributor_cfscore"]])
         rv[Col_Nums["candidate_cfscore"]] = float(rv[Col_Nums["candidate_cfscore"]])
-        rv[Col_Nums["contributor_state"]] = int(rv[Col_Nums["contributor_state"]])
+        rv[Col_Nums["cycle"]] = int(rv[Col_Nums["cycle"]])
         return rv
 
     except:
@@ -144,7 +138,7 @@ def data_cleaning(sc, file_in):
     return data
 
 
-def create_vectors(line):
+def builld_features(line, testing=False):
 
     key = line[Col_Nums["bonica_cid"]]
     v_cycle = line[Col_Nums["cycle"]]  #Does not need to be a number
@@ -224,7 +218,7 @@ def create_vectors(line):
         v_candidate_cfscore = -3.0
 
     if v_candidate_cfscore != v_contr_cfscore:
-        ideoDifference = abs(v_candidate_cfscore) - abs(v_contr_cfscore)
+        ideoDifference = abs(v_candidate_cfscore - v_contr_cfscore)
         if ideoDifference == 1:
             v_id_diff = 1
         elif ideoDifference == 2:
@@ -248,14 +242,7 @@ def create_vectors(line):
 
     v_state = line[Col_Nums["contributor_state"]]
 
-    features = { "contributor_types": set(v_contr_type), "gender": v_gender, "state": v_state, "recipient_type": v_rec_type,
-                 "cycles": {v_cycle: 
-                                {"count": 1, "amount": v_amount, "contr_cfscore": v_contr_cfscore, 
-                                 1 : 
-                                        {"label": label, "candidate_cfscore": v_candidate_cfscore}
-                                }
-                           }
-                }
+    features = { "contributor_types": v_contr_type, "gender": v_gender, "state": v_state, "recipient_type": v_rec_type, "cycles": {v_cycle: {"count": 1, "amount": v_amount, "contr_cfscore": v_contr_cfscore, 1: {"label": label, "candidate_cfscore": v_candidate_cfscore}}}}
 
     # contr_dummy = contributor_company_dummy[contr_type] #fed in from above
     # rec_type_cand_dummy = cand_dummy[rec_type]
@@ -264,51 +251,92 @@ def create_vectors(line):
     # rec_cat = line[Col_Nums["recipient_category"]]
     # rec_order = line[Col_Nums["recipient_category_order"]]
     # elect_type = line[Col_Nums["election_type"]]
-    
-
-    # rec_cfscore = line[Col_Nums["candidate_cfscore"]]
 
     vector = (key, features)
     return vector
 
 
-def get_individuals(a, b):
+def reduce_individuals(a, b):
 
-    b_year = list(b["cycles"][0]
-    
+    b_year = list(b["cycles"])[0]
+
     if all(i < b_year for i in list(a["cycles"].keys())):
         a["state"] = b["state"] # Get the most recent     
         a["gender"] = b["gender"]
 
-    if b["cycles"] not in a["cycles"]:
+    if b_year not in a["cycles"]:
         a["cycles"][b_year] = b["cycles"][b_year]
+
     else:
-        a["cycles"]["amount"] += b["cycles"]["amount"]
-        a["cycles"]["count"] +=  1
-        trans_num = a["cycles"]["count"]
+        a["cycles"][b_year]["amount"] += b["cycles"][b_year]["amount"]
+        a["cycles"][b_year]["count"] +=  1
+        trans_num = a["cycles"][b_year]["count"]
         a["cycles"][b_year][trans_num] = b["cycles"][b_year][1]
 
     return a
-    
- 
-def improve_vectos(line):
 
-    pass
+
+G_YEAR = list(range(1980, 2016, 4))
+ALL_YEAR = list(range(1980, 2014, 2))
+
+def create_vectors(line):
+    '''
+    Vector Schema
+        Gender
+        State Ideology
+        Recipient Type
+        Number Of Recent Cycles Donated In
+        Donor Spending Category
+            Average Amount in Each Election
+        Contributor Score
+        Ideology Difference Score
+    '''
+    
+    values = line[1]
+    
+    cycles = values["cycles"]
+    for year in sorted(cycles):
+        list(set(temp1) - set(temp2))
+
+    
 
 def main(file):
 
     sc = pyspark.SparkContext() 
-    data = data_cleaning(sc, file)
-    contributions = data.map(create_vectors)
+    full_data = data_cleaning(sc, file)
 
-    unique_indv = contributions.reduceByKey(get_individuals)
+    train_data = full_data.filter(lambda x : x[0] != 2012)
+    test_data = full_data.filter(lambda x: x[0] == 2012)
 
-    print(unique_indv.first())
+    train_individuals = train_data.map(lambda x: (x[5], "")).reduceByKey(add)
+    test_individuals = test_data.map(lambda x: (x[5], "")).reduceByKey(add)
+    print train_individuals.first()
+    print test_individuals.first()
+
+    train_count = train_individuals.count()
+    test_count = test_individuals.count()
+    print train_count
+    print test_count
+    print ""
+    full_count = train_count + test_count
+    comb_count = train_individuals.join(test_individuals).count()
+    print comb_count
+    print ""
+    portion = comb_count / full_count
+    print portion
+    # contributions = data.map(create_vectors)
+
+    # train_indv = contributions.reduceByKey(get_individuals)
+    # print(train_indv.take(5))
+    # convert = sc.parallelize(unique_indv)
+    # print convert.take(20)
+    # test_indiv
+
 
 
 if __name__ == '__main__':
 
-    file = "gs://cs123data/Data/contribDB_2004.csv"
+    file = "gs://cs123data/Data/full_data.csv"
     
     main(file)
 

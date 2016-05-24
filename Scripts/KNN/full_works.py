@@ -16,6 +16,26 @@ Col_Nums = {"cycle":0,"transaction_id":1,"transaction_type":2,"amount":3,"date":
             "contributor_cfscore":36,"candidate_cfscore":37,"latitude":38,"longitude":39,"gis_confidence":40,"contributor_district_90s":41,
             "contributor_district_00s":42,"contributor_district_10s":43,"lname_frequency":44,"efec_memo":45,"efec_memo2":46,"efec_transaction_id_orig":47,
             "efec_org_orig":48,"efec_comid_orig":49,"efec_form_type":50}
+'''
+
+Important!!
+    We can only use cateogrical or numeric values, not both
+
+
+Resources:
+    KNN Lecture: http://cis.poly.edu/~mleung/FRE7851/f07/k-NearestNeighbor.pdf
+    Categorical Paper: https://www.cis.upenn.edu/~sudipto/mypapers/categorical.pdf
+
+    Important Questions:
+        How are we defining distance:
+
+        Determing Optimal K:
+            Data shouldn't prevent an iterative approach
+                Consdier cross validation methods
+
+
+'''
+
 
 
 def csv_parser(line):
@@ -68,7 +88,6 @@ def formKeyValues(x):
     lat = x[Col_Nums["latitude"]]
     lng = x[Col_Nums["longitude"]]
     #Recipient Data
-
     #rid = x[Col_Nums["bonica_rid"]]
     party = x[Col_Nums["recipient_party"]] #100 is dem; 200 is rep; 328 is ind
     rec_type = x[Col_Nums["recipient_type"]]
