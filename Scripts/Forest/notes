@@ -1,0 +1,46 @@
+
+Notes;
+
+Train: 12483001                                                                        
+Test: 3976917
+
+Combinded: 1705832
+
+Portion of Train in Test: 0.1367
+
+
+Setup Two-Decision Trees:
+    
+    First Tree:
+        People Whose Backgrounds We Know:
+            Testing Dataset:
+                * Dataset Includes all people in 2012 who have a past
+                * We have to add all people who have a past as non-givers
+            Only 0.1367 of them donated in 2012
+
+    Second Tree:
+        Peoples Backgrounds We Don't know
+            We Train Based On All Previous Individuals Based on Characteristics
+                * Exclude 2012
+                * Exclude Some People Who
+                * Only People Who Donated in General Elections
+                * Things We Can Know Without Knowing Who They Donated Too
+                    - i.e. we pretend that these are random individuals in the US
+
+
+    train_individuals = train_data.map(lambda x: (x[5], "")).reduceByKey(add)
+    test_individuals = test_data.map(lambda x: (x[5], "")).reduceByKey(add)
+    print train_individuals.first()
+    print test_individuals.first()
+
+    train_count = train_individuals.count()
+    test_count = test_individuals.count()
+    print train_count
+    print test_count
+    print ""
+    full_count = train_count + test_count
+    comb_count = train_individuals.join(test_individuals).count()
+    print comb_count
+    print ""
+    portion = comb_count / full_count
+    print portion

@@ -1,0 +1,1000 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"test",
+				"testData	statement"
+			],
+			[
+				"min",
+				"main_file"
+			],
+			[
+				"tran",
+				"transfomation"
+			],
+			[
+				"la",
+				"labeledPoint"
+			],
+			[
+				"l",
+				"labeledData"
+			],
+			[
+				"ou",
+				"output"
+			],
+			[
+				"outp",
+				"output_non_contributors"
+			],
+			[
+				"labe",
+				"labeled_contributors"
+			],
+			[
+				"label",
+				"labeled_non_contributors"
+			],
+			[
+				"non",
+				"non_contributors"
+			],
+			[
+				"vec",
+				"vectorized"
+			],
+			[
+				"reduce",
+				"reduce_individuals"
+			],
+			[
+				"ev",
+				"evaluate_transactions"
+			],
+			[
+				"in",
+				"individuals"
+			],
+			[
+				"contribut",
+				"contributors"
+			],
+			[
+				"idn",
+				"Individauls"
+			],
+			[
+				"main",
+				"main_file"
+			],
+			[
+				"all",
+				"all_individuals"
+			],
+			[
+				"Label",
+				"LabeledPoint"
+			],
+			[
+				"com",
+				"combined_evaluations"
+			],
+			[
+				"eval",
+				"evaluated_data"
+			],
+			[
+				"evl",
+				"evaluate_contribution"
+			],
+			[
+				"data",
+				"data_2012"
+			],
+			[
+				"ma",
+				"main_file"
+			],
+			[
+				"v_",
+				"v_avg"
+			],
+			[
+				"c",
+				"cf_score"
+			],
+			[
+				"num",
+				"num_general"
+			],
+			[
+				"v",
+				"v_amount"
+			],
+			[
+				"cycle",
+				"cycles"
+			],
+			[
+				"RE",
+				"RECENT_G"
+			],
+			[
+				"RECN",
+				"Recent"
+			],
+			[
+				"full",
+				"full_count"
+			],
+			[
+				"train",
+				"train_count"
+			],
+			[
+				"tr",
+				"train_individuals"
+			],
+			[
+				"tes",
+				"test_individuals"
+			],
+			[
+				"red",
+				"reduceByKey"
+			],
+			[
+				"v_c",
+				"v_contr_cfscore"
+			],
+			[
+				"b",
+				"b_year"
+			],
+			[
+				"con",
+				"contributor_cfscore"
+			],
+			[
+				"cf",
+				"contributor_cfscore"
+			],
+			[
+				"i",
+				"ifmain	if __name__ == '__main__'"
+			],
+			[
+				"fe",
+				"features"
+			],
+			[
+				"va",
+				"v_party"
+			],
+			[
+				"cont",
+				"contr_cfscore"
+			],
+			[
+				"contr",
+				"contr_type"
+			],
+			[
+				"cs",
+				"csv_parser"
+			],
+			[
+				"grou",
+				"groups"
+			],
+			[
+				"am",
+				"amt_y_val"
+			],
+			[
+				"co",
+				"count_x_val"
+			],
+			[
+				"re",
+				"result"
+			],
+			[
+				"fil",
+				"file_output"
+			],
+			[
+				"pa",
+				"partial_path"
+			],
+			[
+				"coun",
+				"count_sorted"
+			],
+			[
+				"amt",
+				"amt_density"
+			],
+			[
+				"if",
+				"ifmain	if __name__ == '__main__'"
+			],
+			[
+				"AM",
+				"Amt_Reduce"
+			],
+			[
+				"Co",
+				"Count_Reduce"
+			],
+			[
+				"Am",
+				"Amt_Reduce"
+			],
+			[
+				"A",
+				"Amt_df"
+			],
+			[
+				"C",
+				"Count_Reduce"
+			],
+			[
+				"CF_",
+				"CF_Float_Filter"
+			],
+			[
+				"CF",
+				"CF_Amt_Filter"
+			],
+			[
+				"amoun",
+				"amount_filter"
+			],
+			[
+				"f",
+				"filter"
+			],
+			[
+				"fro",
+				"from_records"
+			],
+			[
+				"qu",
+				"quant_dom"
+			],
+			[
+				"col",
+				"color_scl"
+			],
+			[
+				"dom",
+				"domain"
+			],
+			[
+				"flo",
+				"float_mapper"
+			],
+			[
+				"state",
+				"stateFill"
+			],
+			[
+				"un",
+				"Unemployment"
+			],
+			[
+				"color",
+				"color_ramp"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"emp",
+				"empArr"
+			],
+			[
+				"pthre",
+				"pthread_cond_wait"
+			],
+			[
+				"Count",
+				"Count_Reduce"
+			],
+			[
+				"O",
+				"OUTPUT_PATH"
+			],
+			[
+				"COun",
+				"Count_df"
+			],
+			[
+				"COntri",
+				"contrbutions"
+			],
+			[
+				"p",
+				"pthread_join"
+			],
+			[
+				"thd",
+				"thd1"
+			],
+			[
+				"pr",
+				"print1s"
+			],
+			[
+				"pt",
+				"pthread"
+			],
+			[
+				"bas",
+				"base_col_num"
+			],
+			[
+				"nu",
+				"num_cols"
+			],
+			[
+				"cur",
+				"cur_col_num"
+			],
+			[
+				"base",
+				"base_row_num"
+			],
+			[
+				"prg",
+				"progress"
+			],
+			[
+				"player",
+				"player_2_move"
+			],
+			[
+				"print",
+				"printf	printf …"
+			],
+			[
+				"sp",
+				"split"
+			],
+			[
+				"add",
+				"address"
+			],
+			[
+				"Sp",
+				"SparkConf"
+			],
+			[
+				"cu",
+				"cur_col_num"
+			],
+			[
+				"pl",
+				"player_2_move"
+			],
+			[
+				"pla",
+				"player_1_move"
+			],
+			[
+				"n",
+				"num_cols"
+			],
+			[
+				"row",
+				"row_num"
+			],
+			[
+				"ba",
+				"base_row_num"
+			],
+			[
+				"m",
+				"m"
+			],
+			[
+				"game",
+				"game_t"
+			],
+			[
+				"gam",
+				"game_t"
+			],
+			[
+				"ga",
+				"game_t"
+			],
+			[
+				"adr",
+				"address"
+			],
+			[
+				"ch",
+				"in_chicago"
+			],
+			[
+				"ad",
+				"addr"
+			],
+			[
+				"inc",
+				"inc	#include \"…\""
+			],
+			[
+				"MR",
+				"MRtopContributers"
+			],
+			[
+				"fi",
+				"fields"
+			],
+			[
+				"mi",
+				"main	main()"
+			],
+			[
+				"vis",
+				"visitees"
+			],
+			[
+				"vi",
+				"visitees"
+			],
+			[
+				"visit",
+				"visitors"
+			],
+			[
+				"visi",
+				"visitees"
+			],
+			[
+				"mapper",
+				"mapper_visitee"
+			],
+			[
+				"reduc",
+				"reducer_visitee"
+			],
+			[
+				"reducer_",
+				"reducer_init"
+			],
+			[
+				"reducer",
+				"reducer_final"
+			],
+			[
+				"dat",
+				"date_list"
+			],
+			[
+				"hea",
+				"heappushpop"
+			],
+			[
+				"heap",
+				"heappush"
+			],
+			[
+				"ha",
+				"heap"
+			],
+			[
+				"da",
+				"date_list"
+			],
+			[
+				"mapper_",
+				"mapper_visitor"
+			],
+			[
+				"vs",
+				"visitee_name"
+			],
+			[
+				"check",
+				"check_dates"
+			],
+			[
+				"nm",
+				"name"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "\n\n",
+			"settings":
+			{
+				"buffer_size": 2,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 138.0,
+		"last_filter": "package control: in",
+		"selected_items":
+		[
+			[
+				"package control: in",
+				"Package Control: Install Package"
+			],
+			[
+				"pa",
+				"Package Control: Install Package"
+			],
+			[
+				"git",
+				"Package Control: Install Package"
+			],
+			[
+				"Trim",
+				"Trimmer: Trim trailing whitespace."
+			],
+			[
+				"Package Control: In",
+				"Package Control: Install Package"
+			],
+			[
+				"pac",
+				"Package Control: Create Package File"
+			],
+			[
+				"Package Control: Ins	",
+				"Package Control: Install Package"
+			],
+			[
+				"Packa	",
+				"Package Control: Add Channel"
+			]
+		],
+		"width": 521.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"Package Control: Install Package",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/vectorizer.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/decisionTree.py",
+		"/home/gareth/.config/sublime-text-3/Packages/User/Anaconda.sublime-settings",
+		"/media/gareth/Project/Election-Contrib/Scripts/GCloudNotes.txt",
+		"/home/gareth/Desktop/Untitled Document",
+		"/home/gareth/Desktop/API-keys",
+		"/home/gareth/Documents/garethjones/pa2/reduce_game.c",
+		"/home/gareth/Documents/garethjones/pa2/reduce_game.",
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/notes",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/amountExploration.py",
+		"/home/gareth/.config/sublime-text-3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/home/gareth/Downloads/Output-checkpoint.txt-part-00000",
+		"/media/gareth/Project/Election-Contrib/Scripts/sparkSQL.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/dataframe.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/amtPlot.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/full_works.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/vectorizer.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/pipeline.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/KNN/full_works.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/debugger.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/RecipIdeoAllPlot.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/topindividuals.py",
+		"/media/gareth/Project/Election-Contrib/full_works.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/contributorTypePlot.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/ideologyExploration.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/column_counter.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/ideoPlot.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/dataCleaner.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/ideology.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/csv_merger.py",
+		"/home/gareth/.cache/.fr-oLzK6u/combine-csv.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/combine-csv.py.zip",
+		"/home/gareth/.cache/.fr-pGswkI/combine-csv.py",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/CMSC/C/pa3.c",
+		"/media/gareth/Project/Election-Contrib/Scripts/LookUps/Output/ideoOutput.txt",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/Data Visulization/svn/garethjones-cs239-spr-16/hw3/hw3.txt",
+		"/home/gareth/Documents/Metrics/PS5Book.tex",
+		"/home/gareth/Documents/STAT/FinalReport2.tex",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/Data Visulization/svn/garethjones-longpham-cs239-spr-16/project2/student.js",
+		"/home/gareth/Documents/STAT/Project 2.ipynb",
+		"/media/gareth/Project/Election-Contrib/Scripts/ideology.py",
+		"/media/gareth/Project/zepplinTunnel.txt",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/Data Visulization/svn/garethjones-longpham-cs239-spr-16/project2/Gjstudent.js",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/Data Visulization/svn/garethjones-longpham-cs239-spr-16/project2/index.html",
+		"/media/gareth/Project/Scripts/contribCleaner.py",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/CMSC/C/linkedLists.c",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/CMSC/C/concurrency.c",
+		"/media/gareth/Project/Scripts/ideology.py",
+		"/media/gareth/Project/Scripts/topindividuals.py",
+		"/media/gareth/Project/Scripts/topIndustries.py",
+		"/media/gareth/Project/Scripts/topcities.py",
+		"/media/gareth/Project/Scripts/sparkSQL.py",
+		"/media/gareth/Project/Scripts/wordcount.py",
+		"/media/gareth/Project/Scripts/zepplinTunnel.txt",
+		"/media/gareth/Project/Scripts/topcontributors.py",
+		"/media/gareth/Project/Scripts/zipcode.py",
+		"/home/gareth/Documents/STAT/Project2Evals/comments",
+		"/home/gareth/Documents/DataVis/p2notes",
+		"/media/gareth/Project/Scripts/zeppelin.sh",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/Data Visulization/Lectures/multi-dim.txt",
+		"/home/gareth/spark-1.6.1/python/pyspark/mllib/stat/_statistics.py",
+		"/home/gareth/.awsconfig~",
+		"/home/gareth/Documents/STAT/Report2.tex",
+		"/home/gareth/Documents/STAT/Project2.tex",
+		"/home/gareth/Documents/STAT/Project",
+		"/home/gareth/Documents/STAT/Project 2_files/Project 2.tex",
+		"/home/gareth/Documents/STAT/Project 2.txt",
+		"/home/gareth/Documents/STAT/2.txt",
+		"/home/gareth/.awsconfig",
+		"/home/gareth/Downloads/google-cloud-sdk/README",
+		"/home/gareth/.bashrc",
+		"/home/gareth/Downloads/google-cloud-sdk/RE",
+		"/home/gareth/awsconfig",
+		"/home/gareth/.ipython/profile_pyspark/startup/00-pyspark-setup.py",
+		"/home/gareth/.ipython/profile_pyspark/ipython_config.py",
+		"/media/gareth/OS/Documents and Settings/Gareth/Documents/3Year/Spring/CMSC/C/pprocessing.txt",
+		"/home/gareth/.ipython/profile_pyspark/startup/README",
+		"/home/gareth/.ipython/profile_default/startup/README",
+		"/home/gareth/.ipython/README",
+		"/home/gareth/.jupyter/jupyter_notebook_config.py",
+		"/home/gareth/.ipython/profile_default/db/dhist",
+		"/home/gareth/.jupyter/migrated",
+		"/home/gareth/Documents/garethjones/pa2/reduce_game.h",
+		"/media/gareth/Project/Scripts/notes",
+		"/home/gareth/Documents/garethjones/pa2/game.h",
+		"/home/gareth/spark-1.6.1/examples/src/main/python/wordcount.py",
+		"/home/gareth/Documents/lecure13.txt",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/Regression/Note/week6",
+		"/media/gareth/OS/Users/Gareth/Documents/3Year/Spring/CMSC/15notes.txt",
+		"/home/gareth/Documents/Project/Person.py",
+		"/home/gareth/spark-1.6.1/examples/src/main/python/logistic_regression.py",
+		"/home/gareth/spark-1.6.1/python/pyspark/profiler.py",
+		"/home/gareth/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+		"/home/gareth/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/gareth/Documents/Programming Assignments/task4.py",
+		"/home/gareth/Documents/garethjones/pa2/bool_table.h",
+		"/home/gareth/Documents/garethjones/pa2/game.c",
+		"/home/gareth/Documents/STAT/Midterm Review",
+		"/home/gareth/Documents/garethjones/pa2/double_table.c",
+		"/home/gareth/Documents/garethjones/pa2/bool_table.c",
+		"/home/gareth/Documents/garethjones/pa1/task4.py",
+		"/home/gareth/Documents/garethjones/pa1/task3.py",
+		"/home/gareth/Documents/garethjones/pa1/task2.py",
+		"/home/gareth/Documents/garethjones/pa1/task1.py",
+		"/home/gareth/Documents/Programming Assignments/task3.py",
+		"/home/gareth/Documents/Programming Assignments/task2.py",
+		"/home/gareth/Documents/Programming Assignments/task1.py",
+		"/home/gareth/Documents/Programming Assignments/whoisvisiting.py",
+		"/media/gareth/OS/Users/Gareth/Documents/3 Year/Spring/CMSC/13notesc",
+		"/home/gareth/Documents/Programming Assignments/wordcount.py",
+		"/home/gareth/Documents/Programming Assignments/practice.txt",
+		"/home/gareth/.config/sublime-text-3/Packages/Default/Default (Linux).sublime-keymap",
+		"/home/gareth/.mrjob.conf",
+		"/home/gareth/Documents/index.html"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"transfomation",
+			"labeled_non_contributors",
+			"contributor_occupation",
+			"transaction_id",
+			"create_ve",
+			"amt",
+			"contr_cfscore",
+			"line",
+			"x",
+			"v_party",
+			">",
+			"-",
+			"x",
+			"both",
+			"gauss",
+			"\\\\",
+			"\\",
+			"\\\\",
+			",[",
+			"[",
+			"]",
+			"[",
+			"hat",
+			"\\subsubsection",
+			"\\hat",
+			"Count_Reduce",
+			"count",
+			"the p-va",
+			"empArr",
+			"http",
+			"spark_version",
+			"subsection",
+			"notebook",
+			",",
+			", ",
+			"player_1_move",
+			"remove",
+			"counts",
+			"check_dates",
+			"4",
+			"tab",
+			"tabe",
+			"scra"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"avg_contributed",
+			"candidate_cfscore",
+			"label",
+			"<=",
+			"",
+			"line",
+			"\\",
+			"\\\\",
+			"\\",
+			"[",
+			",[",
+			" ",
+			"\\subsubsection*",
+			"count_density",
+			"amt",
+			"UnArr",
+			"section*",
+			"d;",
+			"amount",
+			"date_list"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2,
+								2
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "",
+							"bh_regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 112.0
+	},
+	"pinned_build_system": "",
+	"project": "forest.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"/media/gareth/Project/Election-Contrib/Scripts/GCloudNotes.txt"
+			],
+			[
+				"1",
+				"~/Documents/lecure13.txt"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"last_automatic_layout":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		]
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
