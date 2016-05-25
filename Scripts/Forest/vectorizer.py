@@ -27,6 +27,9 @@ Col_Nums = {"cycle":0,"transaction_id":1,"transaction_type":2,"amount":3,"date":
             "efec_org_orig":48,"efec_comid_orig":49,"efec_form_type":50}
 
 
+GENERALS = set(range(1980, 2016, 4))
+ALL_YEAR = set(range(1980, 2014, 2))
+RECENT = set(range(2000, 2014, 2))
 
 def csv_parser(line):   
 
@@ -53,7 +56,6 @@ def data_cleaning(sc, file_in):
     data = data.filter(lambda x: len(x) == 51)
     
     return data
-
 
 def build_features(line, testing=False):
 
@@ -168,7 +170,6 @@ def build_features(line, testing=False):
     vector = (key, features)
     return vector
 
-
 def reduce_individuals(a, b):
 
     b_year = list(b["cycles"])[0]
@@ -190,11 +191,6 @@ def reduce_individuals(a, b):
         a["cycles"][b_year][trans_num] = b["cycles"][b_year][1]
 
     return a
-
-
-GENERALS = set(range(1980, 2016, 4))
-ALL_YEAR = set(range(1980, 2014, 2))
-RECENT = set(range(2000, 2014, 2))
 
 def create_vectors(line):
     
@@ -222,7 +218,6 @@ def create_vectors(line):
 
 
     return (line[0], [num_recent, num_general, gender, cf_score, v_avg])
-
 
 def evaluate_transactions(line):
 
@@ -266,16 +261,12 @@ def evaluate_transactions(line):
 
     return (key, label)
 
-
-def main(main_file):
-
-
-    sc = pyspark.SparkContext(appName="LabelMaker")
+def transfomation(main_file, sc)
 
     full_data = data_cleaning(sc, main_file)
 
     # Evaluate 2012 Testing Data
-    data_2012 = full_data.filter(lambda x : x[0] == 2012) # Should probably filter out other transaction types
+    data_2012 = full_data.filter(lambda x : x[0] == 1984) # Should probably filter out other transaction types
     evaluated_data = data_2012.map(evaluate_transactions) # Determine the label for each transaction
     evaluations = evaluated_data.reduceByKey(lambda x, y: x) # An RDD of Unique Keys 
 
@@ -288,17 +279,24 @@ def main(main_file):
     non_contributors = vectorized.subtractByKey(evaluations)
     contributors = vectorized.join(evaluations)
 
-    output_non_contributors = non_contributors.map(lambda x: (0.0, x[1]))
-    output_contributors = contributors.map(lambda x: (x[1], x[0]))
-    output = output_non_contributors.union(output_contributors)
+    labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1]))
+    labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1], x[0]))
+    combined = labeled_non_contributors.union(labeled_contributors)
 
-    output.saveAsTextFile("gs://cs123data/Output/checkpoint.txt")
+    # output = combined.collect()
+    # output.saveAsTextFile("gs://cs123data/Output/checkpoint")
+
+def main(main_file, sc):
+
+
+
+    
+
 
 
 if __name__ == '__main__':
 
-    # main_file = "gs://cs123data/Data/full_data.csv"
-    main_file = "gs://cs123data/Data/full_data.csv"
+    main_file = "gs://cs123data/Data/practice.csv"
+    sc = pyspark.SparkContext(appName="LabelMaker")
 
-    main(main_file)
-    # main(main_file, test_file)
+    main(main_file, sc)
