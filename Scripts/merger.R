@@ -12,6 +12,8 @@ ACS_11_5YR_DP03_ann = ACS_11_5YR_DP03_ann[-1,]
 
 ACS_11_5YR_DP03_ann$ZCTA = as.numeric(as.character(substr(ACS_11_5YR_DP03_ann$Geography, 7, 11)))
 
+Data_ZipZACTmerged = Data_ZipZACTmerged[(Data_ZipZACTmerged$ZCTA %in% ACS_11_5YR_DP03_ann$ZCTA),]
+
 new_data = full_join(Data_ZipZACTmerged, ACS_11_5YR_DP03_ann, by = "ZCTA")
 
 #delete repeated rows
@@ -62,8 +64,9 @@ new_data = new_data[,!colnames(new_data) %in% drops]
 
 #get rid of estimates/totals
 
+end = ncol(new_data)
 drop.na = c()
-for(col in colnames(new_data[,c(6:559)])){
+for(col in colnames(new_data[,c(6:end)])){
   comp = as.numeric(as.character((new_data[,col])))
   comp[is.na(comp)] = 0
   if(any(comp > 100)){
@@ -73,7 +76,8 @@ for(col in colnames(new_data[,c(6:559)])){
 
 new_data = new_data[,!colnames(new_data) %in% drop.na]
 
-new_data = new_data[,-c(190,191)]
+new_data = new_data[,-which(colnames(new_data) == "Id")]
+new_data = new_data[,-which(colnames(new_data) == "Geography")]
 
 drops = c()
 for(x in colnames(new_data)){
@@ -86,7 +90,9 @@ new_data = new_data[,!colnames(new_data) %in% drops]
 
 new_data = new_data[,-c(2,3,4)]
 
-for(col in colnames(new_data)[3:262]){
+end = ncol(new_data)
+
+for(col in colnames(new_data)[3:end]){
   ints = classIntervals(as.numeric(new_data[,col]), n = 10, style = "kmeans")
   new_data[,paste(col, "cat", sep = "_")] = findCols(ints)
 }
@@ -94,4 +100,6 @@ for(col in colnames(new_data)[3:262]){
 new_data$ZIP = str_pad(new_data$ZIP, 5, pad = "0")
 new_data$ZCTA = str_pad(new_data$ZCTA, 5, pad = "0")
 
-write.csv(new_data, file = "D:/updated_merger_3.csv")
+new_data = new_data[,-(2:end)]
+
+write.csv(new_data, file = "D:/updated_merger_5.csv")
