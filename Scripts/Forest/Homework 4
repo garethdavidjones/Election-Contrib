@@ -2,20 +2,20 @@ Homework 4
 
 Question 1:
 
-    The the total width of the plot would need to 4 inches. In this example, the 4 diagonals have the same slope. 
+    The the total width of the plot would need to 8 inches. In this example, the 4 diagonals have the same slope. 
     By calculating the base of the triangle given that the angle should be 45 degrees and the total height is 2 we see
-    that the distance between the left vertex and the center needs to 2. Given that there are 2 diagonals we need to 
+    that the distance between the left vertex and the center needs to 2. Given that there are 4 diagonals we need to 
     multiply the total the base distance by 2 to get the total width of the chart.
 
             - Height = 2
             - tan(45) = 2/b
             - width = 2 * b
 
-      |   /\   
-      |  /| \  
-      | / |  \ 
-      |/__|   \
-      ----------
+      |   /\      /\
+      |  /| \    /  \
+      | / |  \  /    \
+      |/__|   \/      \
+      -------------------
 
 Question 2:
     
