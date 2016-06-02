@@ -3,8 +3,10 @@ import csv
 from StringIO import StringIO
 from operator import add
 from pyspark.mllib.regression import LabeledPoint
-import pysark.mllib.tree import RandomForest, RandomForestModel
-from pyspark.mllib.tree import GradientBoostedTrees, GradientBoostedTreesModel
+import time 
+
+ROM_CF = 1.175483
+OBA_CF = -1.648152 
 
 # http://www.270towin.com/2008_Election/
 stateIdeo = {"WA": -2, "OR": -2, "CA": -2, "NV": -2, "ID": 2, "MT": 1,
@@ -18,37 +20,83 @@ stateIdeo = {"WA": -2, "OR": -2, "CA": -2, "NV": -2, "ID": 2, "MT": 1,
              "HI": -2
              }
 
-Col_Nums = {"cycle":0,"transaction_id":1,"transaction_type":2,"amount":3,"date":4,"bonica_cid":5,"contributor_name":6,"contributor_lname":7,
-            "contributor_fname":8,"contributor_mname":9,"contributor_suffiline":10,"contributor_title":11,"contributor_ffname":12,"contributor_type":13,
-            "contributor_gender":14,"contributor_address":15,"contributor_city":16,"contributor_state":17,"contributor_zipcode":18,
-            "contributor_occupation":19,"contributor_employer":20,"contributor_category":21,"contributor_category_order":22,"is_corp":23,
-            "organization_name":24,"parent_organization_name":25,"recipient_name":26,"bonica_rid":27,"recipient_party":28,"recipient_type":29,
-            "recipient_state":30,"recipient_category":31,"recipient_category_order":32,"recipient_district":33,"seat":34,"election_type":35,
-            "contributor_cfscore":36,"candidate_cfscore":37,"latitude":38,"longitude":39,"gis_confidence":40,"contributor_district_90s":41,
-            "contributor_district_00s":42,"contributor_district_10s":43,"lname_frequency":44,"efec_memo":45,"efec_memo2":46,"efec_transaction_id_orig":47,
-            "efec_org_orig":48,"efec_comid_orig":49,"efec_form_type":50}
+Col_Nums = {"cycle":0, "transaction_id":1, "transaction_type":2,"amount":3,"date":4,
+            "bonica_cid":5,"contributor_name":6,"contributor_lname":7, "contributor_fname":8,
+            "contributor_mname":9,"contributor_suffiline":10,"contributor_title":11,
+            "contributor_ffname":12,"contributor_type":13, "contributor_gender":14,
+            "contributor_address":15,"contributor_city":16,"contributor_state":17,
+            "contributor_zipcode":18,"contributor_occupation":19,"contributor_employer":20,
+            "contributor_category":21,"contributor_category_order":22,"is_corp":23,
+            "organization_name":24,"parent_organization_name":25,"recipient_name":26,
+            "bonica_rid":27,"recipient_party":28,"recipient_type":29,"recipient_state":30,
+            "recipient_category":31,"recipient_category_order":32,"recipient_district":33,
+            "seat":34,"election_type":35,"contributor_cfscore":36,"candidate_cfscore":37,
+            "latitude":38,"longitude":39,"gis_confidence":40,"contributor_district_90s":41,
+            "contributor_district_00s":42,"contributor_district_10s":43, "lname_frequency":44,
+            "efec_memo":45,"efec_memo2":46,"efec_transaction_id_orig":47, "efec_org_orig":48,
+            "efec_comid_orig":49,"efec_form_type":50 }
 
+BAD_ZIPS = set(['00801', '00802', '00803', '00804', '00805', '00820', '00821', '00822', '00823', '00824', '00830', 
+                '00831', '00840', '00841', '00850', '00851', '09002', '09003', '09004', '09005', '09006', '09007', 
+                '09008', '09009', '09010', '09011', '09012', '09013', '09014', '09020', '09021', '09028', '09033', 
+                '09034', '09038', '09042', '09046', '09049', '09051', '09053', '09054', '09055', '09058', '09059', 
+                '09060', '09063', '09067', '09068', '09069', '09075', '09079', '09081', '09086', '09088', '09090', 
+                '09092', '09094', '09095', '09096', '09099', '09100', '09102', '09103', '09104', '09107', '09112', 
+                '09114', '09123', '09126', '09128', '09131', '09136', '09137', '09138', '09139', '09140', '09142', 
+                '09143', '09154', '09172', '09173', '09177', '09180', '09186', '09201', '09211', '09213', '09214', 
+                '09226', '09227', '09229', '09237', '09245', '09250', '09261', '09263', '09264', '09265', '09267', 
+                '09301', '09302', '09304', '09305', '09306', '09307', '09308', '09309', '09310', '09311', '09312', 
+                '09313', '09314', '09315', '09316', '09317', '09320', '09321', '09327', '09328', '09330', '09331', 
+                '09332', '09333', '09334', '09336', '09337', '09338', '09339', '09340', '09342', '09343', '09344', 
+                '09347', '09348', '09350', '09351', '09352', '09353', '09354', '09355', '09356', '09357', '09359', 
+                '09360', '09363', '09364', '09365', '09366', '09367', '09368', '09369', '09370', '09371', '09372', 
+                '09373', '09374', '09375', '09376', '09377', '09378', '09380', '09382', '09383', '09384', '09387', 
+                '09391', '09393', '09394', '09396', '09397', '09399', '09403', '09421', '09447', '09454', '09459', 
+                '09461', '09463', '09464', '09468', '09469', '09470', '09494', '09496', '09498', '09501', '09502', 
+                '09503', '09504', '09505', '09506', '09507', '09508', '09509', '09510', '09511', '09513', '09517', 
+                '09524', '09532', '09534', '09543', '09545', '09549', '09550', '09554', '09556', '09557', '09564', 
+                '09565', '09566', '09567', '09568', '09569', '09570', '09573', '09574', '09575', '09576', '09577', 
+                '09578', '09579', '09581', '09582', '09586', '09587', '09588', '09589', '09590', '09591', '09593', 
+                '09594', '09596', '09599', '09602', '09603', '09604', '09605', '09606', '09607', '09608', '09609', 
+                '09610', '09611', '09613', '09617', '09618', '09620', '09621', '09622', '09623', '09624', '09625', 
+                '09626', '09627', '09630', '09631', '09633', '09636', '09642', '09643', '09645', '09647', '09648', 
+                '09649', '09701', '09702', '09703', '09704', '09705', '09706', '09707', '09708', '09709', '09710', 
+                '09711', '09713', '09714', '09715', '09716', '09717', '09718', '09719', '09720', '09721', '09722', 
+                '09723', '09724', '09726', '09727', '09728', '09729', '09730', '09731', '09732', '09733', '09734', 
+                '09735', '09736', '09737', '09738', '09739', '09741', '09742', '09743', '09744', '09745', '09747', 
+                '09748', '09749', '09750', '09751', '09752', '09754', '09755', '09756', '09757', '09758', '09759', 
+                '09762', '09769', '09771', '09777', '09780', '09798', '09801', '09803', '09804', '09805', '09806', 
+                '09807', '09808', '09809', '09810', '09811', '09812', '09813', '09814', '09815', '09816', '09817', 
+                '09818', '09820', '09821', '09822', '09823', '09824', '09825', '09826', '09827', '09828', '09829', 
+                '09830', '09831', '09832', '09833', '09834', '09835', '09836', '09837', '09838', '09839', '09840', 
+                '09841', '09842', '09844', '09845', '09846', '09852', '09853', '09855', '09858', '09859', '09862', 
+                '09865', '09868', '09870', '09880', '09890', '09892', '09898', '34002', '34004', '34006', '34007', 
+                '34008', '34011', '34020', '34021', '34022', '34023', '34024', '34025', '34030', '34031', '34032', 
+                '34033', '34034', '34035', '34036', '34037', '34038', '34039', '34041', '34042', '34050', '34055', 
+                '34058', '34060', '34078', '34090', '34091', '34092', '34093', '34095', '34098', '34099', '87115', 
+                '96201', '96202', '96203', '96204', '96205', '96206', '96207', '96209', '96213', '96214', '96218', 
+                '96220', '96224', '96257', '96258', '96259', '96260', '96262', '96264', '96266', '96267', '96269', 
+                '96271', '96275', '96276', '96278', '96283', '96284', '96297', '96303', '96306', '96309', '96310', 
+                '96319', '96321', '96322', '96323', '96326', '96328', '96330', '96336', '96337', '96338', '96339', 
+                '96343', '96346', '96347', '96348', '96349', '96350', '96351', '96362', '96365', '96367', '96368', 
+                '96370', '96372', '96373', '96374', '96375', '96376', '96377', '96378', '96379', '96384', '96386', 
+                '96387', '96388', '96401', '96426', '96427', '96444', '96447', '96501', '96502', '96503', '96507', 
+                '96510', '96511', '96515', '96516', '96517', '96518', '96520', '96521', '96522', '96530', '96531', 
+                '96532', '96534', '96535', '96537', '96538', '96540', '96541', '96542', '96543', '96544', '96546',
+                '96548', '96549', '96550', '96551', '96552', '96553', '96554', '96555', '96557', '96562', '96577', 
+                '96595', '96598', '96599', '96601', '96602', '96603', '96604', '96605', '96606', '96607', '96608', 
+                '96609', '96610', '96611', '96612', '96613', '96614', '96615', '96616', '96617', '96619', '96620', 
+                '96621', '96622', '96624', '96628', '96629', '96643', '96650', '96657', '96660', '96661', '96662', 
+                '96663', '96664', '96665', '96666', '96667', '96668', '96669', '96670', '96671', '96672', '96673', 
+                '96674', '96675', '96677', '96678', '96679', '96681', '96682', '96683', '96686', '96687', '96698', 
+                '96799', '96910', '96912', '96913', '96915', '96916', '96917', '96919', '96921', '96923', '96928', 
+                '96929', '96931', '96932', '96939', '96940', '96941', '96942', '96943', '96944', '96950', '96951', 
+                '96952', '96960', '96970'])
 
-
-# http://www.forbes.com/sites/betsyschiffman/2015/11/10/full-list-most-expensive-zip-codes-in-2015/7/#5a128f712907
-top20zips = set([94027, 11962, 10012, 81656, 10013, 33109, 94062, 91302, 81611, 94010, 94022, 
-             07620, 94920, 90210, 10065, 89413, 90402, 11976, 80111, 94957])
-
-next100zips = set([11975, 94123, 93108, 02108, 90077, 11932, 10011, 33156, 90265, 090274, 10014, 
-               10006, 94028, 10024, 33143, 94301, 92662, 10007, 94920, 95030, 90272, 92067, 
-               92657, 11568, 94133, 91108, 95070, 10021, 81654, 06831, 95030, 92661, 90266, 
-               93920, 92625, 10023, 94024, 90049, 90069, 11024, 92651, 92091, 11930, 10001, 
-               94904, 10022, 94022, 10069, 06870, 11959, 91008, 10004, 98039, 02554, 34102, 
-               07976, 92014, 10580, 10003, 10577, 80113, 06870, 33149, 11231, 94306, 93953, 
-               02493, 06830, 90212, 94506, 90274, 06840, 11217, 32461, 83014, 81655, 94303, 
-               10075, 60043, 80121, 92118, 92660, 11765, 89402, 07078, 02574, 02116, 93066, 
-               90254, 06878, 92037, 11968, 90401, 02210, 93460, 96714, 91302, 02467, 94507, 
-               94025])
 
 GENERALS = set(range(1980, 2016, 4))
 ALL_YEAR = set(range(1980, 2014, 2))
 RECENT = set(range(2000, 2014, 2))
-
 
 def csv_parser(line):
 
@@ -57,7 +105,22 @@ def csv_parser(line):
         rv[Col_Nums["amount"]] = int(abs(float(rv[Col_Nums["amount"]])))  # Conver to Integer to Reduce Memory
         rv[Col_Nums["contributor_cfscore"]] = float(rv[Col_Nums["contributor_cfscore"]])  # Consider changing to in fro ^ reason
         rv[Col_Nums["candidate_cfscore"]] = float(rv[Col_Nums["candidate_cfscore"]])
-        rv[Col_Nums["cycle"]] = int(rv[Col_Nums["cycle"]])
+        # rv[Col_Nums["cycle"]] = rv[Col_Nums["cycle"]]
+        zipCode = rv[Col_Nums["contributor_zipcode"]]
+
+        if len(zipCode) == 1:
+            return [1]
+
+        if len(zipCode) < 5:
+            num_zeros = 5 - len(zipCode)
+            for i in range(num_zeros):
+                zipCode = str(0) + zipCode 
+                rv[Col_Nums["contributor_zipcode"]] = zipCode
+        else:
+            rv[Col_Nums["contributor_zipcode"]] = zipCode[:5]
+        if zipCode in BAD_ZIPS:
+            return [1]
+
         return rv
 
     except:
@@ -112,51 +175,50 @@ def build_features(line, testing=False):
     contr_cfscore = line[Col_Nums["contributor_cfscore"]]
 
     if (contr_cfscore > -1.8 and contr_cfscore <= -1.1):
-        v_contr_cfscore = -2.0
+        v_contr_cfscore = -2
 
     elif (contr_cfscore > -1.1 and contr_cfscore < -0.6):
-        v_contr_cfscore = -1.0
+        v_contr_cfscore = -1
 
     elif (contr_cfscore >= -0.6 and contr_cfscore <= 0.4):
         v_contr_cfscore = 0
 
     elif (contr_cfscore <= 0.8 and contr_cfscore > 0.4):
-        v_contr_cfscore = 1.0
+        v_contr_cfscore = 1
 
     elif (contr_cfscore <= 1.2 and contr_cfscore > 0.8):
-        v_contr_cfscore = 2.0
+        v_contr_cfscore = 2
 
     elif contr_cfscore > 1.2:
-        v_contr_cfscore = 3.0
+        v_contr_cfscore = 3
 
     else:  # Contr_cfscore <= -1.9
-        v_contr_cfscore = -3.0
+        v_contr_cfscore = -3
 
 
     # Need to analyze whether the same distribution exists for candidates as it does for contributors
     candidate_cfscore = line[Col_Nums["candidate_cfscore"]]
 
     if (candidate_cfscore > -1.8 and candidate_cfscore <= -1.1):
-        v_candidate_cfscore = -2.0
+        v_candidate_cfscore = -2
 
     elif (candidate_cfscore > -1.1 and candidate_cfscore < -0.6):
-        v_candidate_cfscore = -1.0
-
+        v_candidate_cfscore = -1
     elif (candidate_cfscore >= -0.6 and candidate_cfscore <= 0.4):
         v_candidate_cfscore = 0
 
     elif (candidate_cfscore <= 0.8 and candidate_cfscore > 0.4):
-        v_candidate_cfscore = 1.0
+        v_candidate_cfscore = 1
 
     elif (candidate_cfscore <= 1.2 and candidate_cfscore > 0.8):
-        v_candidate_cfscore = 2.0
+        v_candidate_cfscore = 2
 
     elif candidate_cfscore > 1.2:
-        v_candidate_cfscore = 3.0
+        v_candidate_cfscore = 3
 
-    else:  # candidate_cfscore <= -1.9
-        v_candidate_cfscore = -3.0
-
+    else:  # i.e candidate_cfscore <= -1.9
+        v_candidate_cfscore = -3
+    
     if v_candidate_cfscore != v_contr_cfscore:
         ideoDifference = abs(v_candidate_cfscore - v_contr_cfscore)
         if ideoDifference == 1:
@@ -181,9 +243,18 @@ def build_features(line, testing=False):
             label = 2
 
     v_state = line[Col_Nums["contributor_state"]]
+    v_zip = line[Col_Nums["contributor_zipcode"]]
 
-    features = {"contributor_types": v_contr_type, "gender": v_gender, "state": v_state, "recipient_type": v_rec_type, "total_amount": v_amount,  "contr_cfscore": v_contr_cfscore,
-                 "cycles": {v_cycle:
+    features = {"contributor_types": v_contr_type, 
+                "gender": v_gender, 
+                "state": v_state, 
+                "ideo_dif": v_id_diff, 
+                "zip": v_zip, 
+                "recipient_type": v_rec_type, 
+                "total_amount": v_amount,
+                "contr_cfscore": v_contr_cfscore, 
+                "cycles": {
+                        v_cycle:
                         {"count": 1, "amount": v_amount,
                             1: {"label": label, "candidate_cfscore": v_candidate_cfscore}}}}
 
@@ -200,6 +271,9 @@ def reduce_individuals(a, b):
     if all(i < b_year for i in list(a["cycles"].keys())):
         a["state"] = b["state"]
         a["contr_cfscore"] = b["contr_cfscore"]
+        a["zip"] = b["zip"]
+        a["contributor_types"] = b["contributor_types"]
+        a["recipient_type"] = b["recipient_type"]
 
     if b_year not in a["cycles"]:
         a["cycles"][b_year] = b["cycles"][b_year]
@@ -217,26 +291,53 @@ def create_vectors(line):
 
     # gender, contribution_type, state, recipient_type
     values = line[1]
+    cid = line[0]
     cycles = set(values["cycles"].keys())
     num_recent = len(RECENT - cycles)
     num_general = len(GENERALS - cycles)
+    zipCode = values["zip"]
 
     gender = values["gender"]
     cf_score = values["contr_cfscore"]
+    recip_type = values["recipient_type"]
+    contr_type = values["contributor_types"]
+
+    if contr_type == "C":
+        v_contrb_type = 0
+    elif contr_type == "I":
+        v_contrb_type = 1
+    else:
+        v_contrb_type = 2
+
+
+    # Recipient Type
+    if values['recipient_type'] == "COMM":
+        v_recip = 0
+    elif values['recipient_type'] == "CAND":
+        v_recip = 1
+    else:
+        v_recip = 2
+
+    ob_dif = abs(OBA_CF - cf_score)
+    rom_dif = abs(ROM_CF - cf_score)
+    if ob_dif < rom_dif: # Ideology more similar to Obama than Romney
+        v_nearer = 0
+    else:
+        v_nearer = 1
 
     # Need to bucket
     avg_contributed = values["total_amount"] / len(cycles)
 
     if avg_contributed <= 500:
         v_avg = 0
-    elif (avg_contributed > 500) and (avg_contributed < 5000):
+    elif (avg_contributed > 500) and (avg_contributed <= 5000):
         v_avg = 1
-    elif (avg_contributed >= 5000) and (avg_contributed < 50000):
+    elif (avg_contributed > 5000) and (avg_contributed < 50000):
         v_avg = 2
     else:
         v_avg = 3
-
-    return (line[0], [num_recent, num_general, gender, cf_score, v_avg])
+                        #     1             2          3        4       5      6           7             8  
+    return (zipCode, [cid, num_recent, num_general, gender, cf_score, v_avg, v_nearer, v_contrb_type, v_recip])    
 
 
 def evaluate_transactions(line):
@@ -247,85 +348,105 @@ def evaluate_transactions(line):
     candidate_cfscore = line[Col_Nums["candidate_cfscore"]]
 
     if (candidate_cfscore > -1.8 and candidate_cfscore <= -1.1):
-        v_candidate_cfscore = -2.0
+        v_candidate_cfscore = -2
 
     elif (candidate_cfscore > -1.1 and candidate_cfscore < -0.6):
-        v_candidate_cfscore = -1.0
+        v_candidate_cfscore = -1
 
     elif (candidate_cfscore >= -0.6 and candidate_cfscore <= 0.4):
         v_candidate_cfscore = 0
 
     elif (candidate_cfscore <= 0.8 and candidate_cfscore > 0.4):
-        v_candidate_cfscore = 1.0
+        v_candidate_cfscore = 1
 
     elif (candidate_cfscore <= 1.2 and candidate_cfscore > 0.8):
-        v_candidate_cfscore = 2.0
+        v_candidate_cfscore = 2
 
     elif candidate_cfscore > 1.2:
-        v_candidate_cfscore = 3.0
+        v_candidate_cfscore = 3
 
     else:  # candidate_cfscore <= -1.9
-        v_candidate_cfscore = -3.0
+        v_candidate_cfscore = -3
 
     if party == "100":
-        label = 1.0
+        label = 1
     elif party == "200":
-        label = 2.0
+        label = 2
     else:  # Try to determine Later
         if v_candidate_cfscore < 0:
-            label = 1.0
+            label = 1
         if v_candidate_cfscore >= 0:
-            label = 2.0
+            label = 2
 
     return (key, label)
 
+def finalize_vectors(line):
 
-def transfomation(main_file, sc):
+    # Discard ZipCode
+    left = line[1][0]   # Contributor Information
+    right = line[1][1]  # Demographic Data 
+    key = left.pop(0)  # Get CID key
+    # values = left.append(right)
+    return (key, left + right)
 
+def build_labels(line):
+
+    key = line[0]
+    label = line[1][1]
+    features = line[0]
+    return (label, features)
+
+def prepare_output(line):
+
+    key = str(line[0])
+    values = [str(i) for i in line[1]] # Con
+    csv_line = key + "," + ",".join(values) # No white space to save space
+    return csv_line
+
+def parse_zipcodes(line):
+    csv_line = list(csv.reader(StringIO(line), delimiter=","))[0]
+    zipCode = csv_line[1]
+    values = csv_line[2:]
+    return (zipCode, values)
+
+def main(main_file, output_directory, sc):
+
+    # Convert from CSV to RDD and make type changes 
     full_data = data_cleaning(sc, main_file)
+    zipData = sc.textFile("gs://cs123data/Auxillary/updated_merger_4.csv")
+    zipData = zipData.map(parse_zipcodes)
+
+    zipData.cache()  # Look into doing this efficiently
+    
     # Evaluate 2012 Testing Data
-    data_2012 = full_data.filter(lambda x: x[0] == 1984)  # Should probably filter out other transaction types
+    data_2012 = full_data.filter(lambda x: x[0] == '1984')  # Should probably filter out other transaction types in datacleaning
     evaluated_data = data_2012.map(evaluate_transactions)  # Determine the label for each transaction
     evaluations = evaluated_data.reduceByKey(lambda x, y: x)  # An RDD of Unique Keys
 
     # Create Vectors
     transactions = full_data.map(build_features)  # Collect Information On Every Transaction
-    individuals = transactions.reduceByKey(reduce_individuals)  # Turn Each person into a vector based on their contributions
-    vectorized = individuals.map(create_vectors)
+    individuals = transactions.reduceByKey(reduce_individuals)  # Turn Each person iftnto a vector based on their contributions
 
-    # Finalize Ouput Data
-    non_contributors = vectorized.subtractByKey(evaluations)
-    contributors = vectorized.join(evaluations)
+    transformed = individuals.map(create_vectors)
+    merged = transformed.leftOuterJoin(zipData)
+    bypass = merged.filter(lambda x: x[1][1] != None)
+    vectorized = bypass.map(finalize_vectors)   
+    first_filter = vectorized.filter(lambda x: x[1] != None)
+    second_filter = first_filter.filter(lambda x: 'NA' not in x[1])
+    non_contributors = second_filter.subtractByKey(evaluations)  # Non-Contributors Are Individuals Who Don't Appear in 
+    contributors = second_filter.join(evaluations)
 
-    labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1]))
-    labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1], x[0]))
+    labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1])) 
+    labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1][1], x[1][0]))
     combined = labeled_non_contributors.union(labeled_contributors)
-
-    return combined
-
-
-def build_model(trainingData):
-
-    pass
-
-
-def main(main_file, sc):
-
-    data = transfomation(main_file, sc)
-    trainingData, testData, CVdata = data.randomSplit([0.70, 0.15, 0.15])
-
-    traniningData.cache()
-    testData.cache()
-    CVdata.cache()
-
-    predictions = model.predict(testData.map(lambda x: x.features))
-    model = GradientBoostedTrees.trainClassifier(, {}, numIterations=100)
-
+    # print combined.take(2)
+    combined.saveAsTextFile(output_directory)
 
 
 if __name__ == '__main__':
 
-    main_file = "gs://cs123data/Data/practice.csv"
-    sc = pyspark.SparkContext(appName="LabelMaker")
+    input_file = "gs://cs123data/Data/full_data.csv"
+    output_directory = "gs://cs123data/Output/FinalVectors"
+    sc = pyspark.SparkContext(appName="vectorizer")
 
-    main(main_file, sc)
+    main(input_file, output_directory, sc)

@@ -1,0 +1,29 @@
+Homework 4
+
+Question 1:
+
+    The the total width of the plot would need to 8 inches. In this example, the 4 diagonals have the same slope. 
+    By calculating the base of the triangle given that the angle should be 45 degrees and the total height is 2 we see
+    that the distance between the left vertex and the center needs to 2. Given that there are 4 diagonals we need to 
+    multiply the total the base distance by 2 to get the total width of the chart.
+
+            - Height = 2
+            - tan(45) = 2/b
+            - width = 2 * b
+
+      |   /\      /\
+      |  /| \    /  \
+      | / |  \  /    \
+      |/__|   \/      \
+      -------------------
+
+Question 2:
+    
+    Suppose we have in Javascript an n-element array "x" of scalar data values.  Write a function histo(x,q) that returns a q-element array that stores a histogram of the data values.  If we call "H = histo(x,q)", the smallest value in x should be counted in the first bin H[0], and the largest value in x should be counted in the last bin H[q-1].  Make your function as concise as possible by using map() and the other utility functions we defined in Project 2 and in answers to HW3: lerp(), unlerp(), minmax(), bin(), unbin().  You won't need all of these, but if you understand what they do you shouldn't need much else either.  Your answer does not need to include the definition of those utility functions.  Include comments so that we know you know what the code is doing.  Ensuring that your function complies with Javascript syntax will facilitate your testing, and our grading.
+
+    lerp()
+
+Question 3:
+    
+
+Question 4:   
