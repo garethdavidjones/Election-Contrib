@@ -3,10 +3,10 @@ import seaborn as sns
 import pandas as pd
 
 
-output = [('', 375), ('C', 740752), ('I', 4391578)]
+output = [('Collosal', 384112), ('Massive', 5023), ('Very Large', 5976), ('Large', 59267), ('Medium', 1390025), ('Small', 2486770), ('Tiny', 5935745)]
 df = pd.DataFrame(output, columns=["Type", "Count"])
 df.head()
 
 sns.barplot(df.Type, df.Count)
-plt.title("Contributer Type")
+plt.title("Distribution of Amounts")
 plt.show()

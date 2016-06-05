@@ -1,5 +1,11 @@
 Homework 4
 
+Sources:
+  Long Pham, Michell Dobbs, Nicholas Nielsen
+  http://www.di.fc.ul.pt/~jpn/r/pca/pca.html
+  http://setosa.io/ev/principal-component-analysis/
+
+
 Question 1:
 
     The the total width of the plot would need to 8 inches. In this example, the 4 diagonals have the same slope. 
@@ -9,7 +15,7 @@ Question 1:
 
             - Height = 2
             - tan(45) = 2/b
-            - width = 2 * b
+            - width = 4 * b
 
       |   /\      /\
       |  /| \    /  \
@@ -19,11 +25,34 @@ Question 1:
 
 Question 2:
     
-    Suppose we have in Javascript an n-element array "x" of scalar data values.  Write a function histo(x,q) that returns a q-element array that stores a histogram of the data values.  If we call "H = histo(x,q)", the smallest value in x should be counted in the first bin H[0], and the largest value in x should be counted in the last bin H[q-1].  Make your function as concise as possible by using map() and the other utility functions we defined in Project 2 and in answers to HW3: lerp(), unlerp(), minmax(), bin(), unbin().  You won't need all of these, but if you understand what they do you shouldn't need much else either.  Your answer does not need to include the definition of those utility functions.  Include comments so that we know you know what the code is doing.  Ensuring that your function complies with Javascript syntax will facilitate your testing, and our grading.
+  function histo(x,q) {
+  
+     var n = x.length;
+     var h = new Array(q);
+     var minMax = minmax(x);
 
-    lerp()
+     // Initialize count in the new histogram
+     for (var i = 0; i < q; i++) {
+        h[i] = 0;
+     }
+     // Map element to buckets
+     for (var i = 0; i < n; i++) {
+        var binNum = bin(x[i], q, minMax);
+        // Handle the boundary
+        binNum = binNum == q ? q-1 : binNum;
+        // Increment Bucket Count
+        h[binNum]++
+     }
+
+     return h;
+   }
 
 Question 3:
-    
 
-Question 4:   
+    1000/B must be an integer otherwise the counts in the new histogram may be inaccurate because we don't know how the data was distributed in the original buckets
+
+    
+Question 4:
+    A) The Mii element is the variance of the corresponding variable. Variance is strictly positive because it is the sum of the squared distance between the points and the mean. The squared component is the reason it is positive else the sum would be equal to 0.
+    B) The first eigenvalue will correspond to the eigenvector in the d direction. The other eigenvalues will be small and do little to increase the variance of the data since e is very small.
+    C) PCA will not allow us to learn anything new because none of the p variables are redundant. The ordering is determined by the variance of the variables.

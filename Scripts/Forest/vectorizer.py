@@ -170,7 +170,7 @@ def build_features(line, testing=False):
     elif rec_type == "CAND":
         v_rec_type = 1
     else:
-        v_rec_type = 0
+        v_rec_type = 2
 
     contr_cfscore = line[Col_Nums["contributor_cfscore"]]
 
@@ -336,7 +336,7 @@ def create_vectors(line):
         v_avg = 2
     else:
         v_avg = 3
-                        #     1             2          3        4       5      6           7             8  
+                        #      1            2          3        4       5       6           7            8  
     return (zipCode, [cid, num_recent, num_general, gender, cf_score, v_avg, v_nearer, v_contrb_type, v_recip])    
 
 

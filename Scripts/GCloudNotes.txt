@@ -17,7 +17,9 @@ gsutil commands
 
 
 gcloud dataproc jobs submit pyspark --cluster cs123cluster9 \
-ideology.py
+vectorizer.py
+
+gcloud compute ssh cs123cluster9-m
 
 Instructions: https://cloud.google.com/dataproc/cluster-web-interfaces
 
@@ -26,7 +28,7 @@ gcloud compute ssh  --zone=us-central1-a \
 
 Then In A Seperate Terminal:
 
-    /usr/bin/google-chrome \
+      /usr/bin/google-chrome \
     --proxy-server="socks5://localhost:1080" \
     --host-resolver-rules="MAP * 0.0.0.0 , EXCLUDE localhost" \
     --user-data-dir=/tmp/
