@@ -37,7 +37,7 @@ def main(input_file):
     evaluator = RegressionEvaluator(
         labelCol="label", predictionCol="prediction", metricName="rmse")
     rmse = evaluator.evaluate(predictions)
-    print("Root Mean Squared Error (RMSE) on test data = %g" % rmse)
+    print("Root Mean Squared Error (RMSE) on test data = {}".format(rmse))
 
     rfModel = model.stages[1]
     print(rfModel)  # summary only
@@ -46,3 +46,5 @@ if __name__ == '__main__':
 	
 	input_file = "gs://cs123data/Output/LabeledVectors3/"
     main(input_file)
+
+    Schenectady

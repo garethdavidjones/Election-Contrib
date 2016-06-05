@@ -22,35 +22,34 @@ Col_Nums = {"cycle":0, "transaction_id":1, "transaction_type":2,"amount":3,"date
             "efec_memo":45,"efec_memo2":46,"efec_transaction_id_orig":47, "efec_org_orig":48,
             "efec_comid_orig":49,"efec_form_type":50 }
 
-def evaluate_transactions(line):
+# def evaluate_transactions(line):
 
-    key = line[Col_Nums["bonica_cid"]]
-    party = line[Col_Nums["recipient_party"]]  # 100 is dem; 200 is rep; 328 is ind
+#     key = line[Col_Nums["bonica_cid"]]
+#     # party = line[Col_Nums["recipient_party"]]  # 100 is dem; 200 is rep; 328 is ind
 
-    candidate_cfscore = line[Col_Nums["candidate_cfscore"]]
+#     # candidate_cfscore = line[Col_Nums["candidate_cfscore"]]
 
-    if party == "100":
-        label = 1
-    elif party == "200":
-        label = 2
-    else:  # Try to determine Later
-        if candidate_cfscore < 0:
-            label = 1
-        if candidate_cfscore >= 0:
-            label = 2
+#     # if party == "100":
+#     #     label = 1
+#     # elif party == "200":
+#     #     label = 2
+#     # else:  # Try to determine Later
+#     #     if candidate_cfscore < 0:
+#     #         label = 1
+#     #     if candidate_cfscore >= 0:
+#     #         label = 2
 
-    return (key, label)
+#     return (key, label)
 
-def evaluation_determine(a,b):
+# def evaluation_determine(a,b):
 
-    if a != b:
-        return 3
-    else:
-        return a
+#     if a != b:
+#         return 3
+#     else:
+#         return a
 
 def finalize_vectors(line):
 
-    # Discard ZipCode
     left = line[1][0]   # Contributor Information
     right = line[1][1]  # Demographic Data 
     key = left.pop(0)  # Get CID key
@@ -73,7 +72,6 @@ def parse_zipcodes(line):
 def main(main_file, output_directory, year, sc):
 
     from processingTools import data_cleaning, build_features, create_vectors, reduce_individuals
-
     # Convert from CSV to RDD and make type changes 
     full_data = data_cleaning(sc, main_file)
     # print "full_data", full_data.take(2)
@@ -84,10 +82,10 @@ def main(main_file, output_directory, year, sc):
     
     # Evaluate 2012 Testing Data
     data_2012 = full_data.filter(lambda x: x[0] == year)  # Should probably filter out other transaction types in datacleaning
-    evaluated_data = data_2012.map(evaluate_transactions)  # Determine the label for each transaction
-    evaluations = evaluated_data.reduceByKey(lambda x, y: x)  # An RDD of Unique Keys
+    evaluated_data = data_2012.map(lambda x: (x[Col_Nums["bonica_cid"]], x[Col_Nums["amount"]]))  # Determine the label for each transaction
+    evaluations = evaluated_data.reduceByKey(lambda x, y: add)  # An RDD of Unique Keys
     # print "evals", evaluations.take(2)
-
+    print "Evals", evaluations.take(5)
     # Create Vectors
     transactions = full_data.map(build_features)  # Collect Information On Every Transaction
     individuals = transactions.reduceByKey(reduce_individuals)  # Turn Each person iftnto a vector based on their contributions
@@ -102,13 +100,13 @@ def main(main_file, output_directory, year, sc):
     labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1])) 
     labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1][1], x[1][0]))
     combined = labeled_non_contributors.union(labeled_contributors)
-    print "combined", combined.take(2)
+    print "combined", combined.take(3)
     combined.saveAsTextFile(output_directory)
 
 
 if __name__ == '__main__':
 
-    sc = pyspark.SparkContext(appName="partyVectorizer")
+    sc = pyspark.SparkContext(appName="amountVectorizer")
     args = sys.argv
     if len(args) < 3:
         print "Not enoughs passed: "
@@ -129,4 +127,3 @@ if __name__ == '__main__':
 
         output_directory = "gs://cs123data/Output/" + args[2]
         main(input_file, output_directory, year, sc)
-        
