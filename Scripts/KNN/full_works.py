@@ -1,11 +1,8 @@
+import sys
 import pyspark
 import csv
 from StringIO import StringIO
-from gaussalgo.knn import compute_neighbors
 import numpy as np
-
-#PRIMARY_FILE_PATH = 'gs://cs123data/Data/full_data.csv'
-PRIMARY_FILE_PATH = 'gs://cs123data/Data/contribDB_1980.csv'
 
 Col_Nums = {"cycle":0,"transaction_id":1,"transaction_type":2,"amount":3,"date":4,"bonica_cid":5,"contributor_name":6,"contributor_lname":7,
             "contributor_fname":8,"contributor_mname":9,"contributor_suffix":10,"contributor_title":11,"contributor_ffname":12,"contributor_type":13,
@@ -16,26 +13,6 @@ Col_Nums = {"cycle":0,"transaction_id":1,"transaction_type":2,"amount":3,"date":
             "contributor_cfscore":36,"candidate_cfscore":37,"latitude":38,"longitude":39,"gis_confidence":40,"contributor_district_90s":41,
             "contributor_district_00s":42,"contributor_district_10s":43,"lname_frequency":44,"efec_memo":45,"efec_memo2":46,"efec_transaction_id_orig":47,
             "efec_org_orig":48,"efec_comid_orig":49,"efec_form_type":50}
-'''
-
-Important!!
-    We can only use cateogrical or numeric values, not both
-
-
-Resources:
-    KNN Lecture: http://cis.poly.edu/~mleung/FRE7851/f07/k-NearestNeighbor.pdf
-    Categorical Paper: https://www.cis.upenn.edu/~sudipto/mypapers/categorical.pdf
-
-    Important Questions:
-        How are we defining distance:
-
-        Determing Optimal K:
-            Data shouldn't prevent an iterative approach
-                Consdier cross validation methods
-
-
-'''
-
 
 
 def csv_parser(line):
@@ -47,67 +24,171 @@ def csv_parser(line):
         rv = [1]  #This row will be removed in data cleaning
         return rv
 
-def primary_data_cleaning():
+def primary_data_cleaning(file_path):
 
-    lines = sc.textFile(PRIMARY_FILE_PATH)
+    lines = sc.textFile(file_path)
     header = lines.first()
     rm = lines.filter(lambda x: x != header) # remove first line
 
     data = rm.map(csv_parser)
-    data = data.filter(lambda x: len(x) == 51) 
+    data = data.filter(lambda x: len(x) != 1) 
 
     return data
 
 def formKeyValues(x):
 
-    #title_dummies = 
-
-    contributor_company_dummy = {'I':0, 'C':1, '':0}
-    
-    female_dummy = {'M':0,'F':1, 'U':0, '':0}
-    male_dummy = {'M':1,'F':0, 'U':0, '':0}
-
-    cand_dummy = {"CAND": 1, 'COMM':0, '':0}
-    comm_dummy = {"CAND": 0, 'COMM':1, '':0}
-
-    #Donor Data
-
-    cycle = float(x[Col_Nums["cycle"]])
-    amount = x[Col_Nums["amount"]]
+    #key
     cid = x[Col_Nums["bonica_cid"]]
+    
+    #values
+
+    rv = []
+
+    #contributor data
+    #amount donated
+    donation_hist_amt = [0] * 17
+    donation_hist_cnt - [0] * 17
+    cycle = int(x[Col_Nums["cycle"]])
+    amount = x[Col_Nums["amount"]]
+    donation_hist_cnt[((2012 - cycle)/2)] = 1
+    donation_hist_amt[((2012 - cycle)/2)] = amount
+
+    rv = rv + donation_hist_cnt + donation_hist_amt
+
+    #ind or committee?
     contr_type = x[Col_Nums["contributor_type"]]
-    contr_dummy = contributor_company_dummy[contr_type] #fed in from above
+
+    #gender
     gender = x[Col_Nums["contributor_gender"]]
-    contr_female_dummy = female_dummy[gender] #fed in from above
-    contr_male_dummy = male_dummy[gender] #fed in from above
-    #zip_code = x[Col_Nums["contributor_zipcode"]] #clsoer the zip closer the donor?; should we just do long/lat?
+    gender_dict = {"M":0, "F":1, "U":2, "":4}
+    gender = gender_dict[gender]
+
+    #industry involved
     industry = x[Col_Nums["contributor_category"]] 
     industry_order = x[Col_Nums["contributor_category_order"]]
+    
+    #is corporation if 1
     is_corp = x[Col_Nums["is_corp"]]
+
+    #where does contributor fall on the spectrum?
     contr_cfscore = x[Col_Nums["contributor_cfscore"]]
-    lat = x[Col_Nums["latitude"]]
-    lng = x[Col_Nums["longitude"]]
+    if contributor_cfscore < -1.9:
+        contributor_cfscore = -2
+    elif contributor_cfscore < -1.1:
+        contributor_cfscore = -1
+    elif contributor_cfscore < -0.6:
+        contributor_cfscore = 0
+    elif contributor_cfscore < 0.4:
+        contributor_cfscore = 1
+    elif contributor_cfscore < 0.8:
+        contributor_cfscore = 2
+    elif contributor_cfscore < 1.2:
+        contributor_cfscore = 3
+    else:
+        contributor_cfscore = 4
+
+    #zip
+    zip_code = x[Col_Nums["contributor_zipcode"]]
+
+    rv = rv + [cycle, zip_code, contributor_cfscore, is_corp, industry_order, industry, gender, contr_type]
+
     #Recipient Data
-    #rid = x[Col_Nums["bonica_rid"]]
+
+    #party
     party = x[Col_Nums["recipient_party"]] #100 is dem; 200 is rep; 328 is ind
-    rec_type = x[Col_Nums["recipient_type"]]
-    rec_type_cand_dummy = cand_dummy[rec_type]
-    rec_type_comm_dummy = comm_dummy[rec_type]
-    #Do we want to include state?
-    rec_cat = x[Col_Nums["recipient_category"]]
-    rec_order = x[Col_Nums["recipient_category_order"]]
+
     elect_type = x[Col_Nums["election_type"]]
+
     rec_cfscore = x[Col_Nums["candidate_cfscore"]]
 
-    return (cid, (set(cycle), float(amount), contr_dummy, contr_female_dummy, contr_male_dummy, industry, industry_order, is_corp,
-                 contr_cfscore, lat, lng, [party], [rec_type_cand_dummy], [rec_type_comm_dummy], [rec_cat], [rec_order], [election_type], [rec_cfscore], 1))
+    rel_score = abs(rec_cfscore - contr_cfscore)
+
+    rv = rv + [1, [rec_cfscore], [rel_score], set([party]), set([elect_type])]
+
+    return (cid, rv)
 
 def reduce_key_vals(a,b):
-    #total amount sufficient? I'd like to look into amount trajectory as well
 
-    return (a[0].union(b[0]), a[1] + b[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11] + b[11], a[12] + b[12], a[13] + b[13],
-            a[14] + b[14], a[15] + b[15], a[16] + b[16], a[17] + b[17], a[18] + b[18]) #the issue could be theat we don't know which are floats and which are just floats
+    rv = []
 
+    #sum all donation history
+
+    for i in range(34):
+        rv[i] = a[i] + b[i]
+    
+        #get latest individual info (though, it should
+        #all be the same)
+
+    cycle_old = a[34]
+    cycle_new = b[34]
+
+    if cycle_new > cycle_old:
+        for i in range(34,42):
+            rv[i] = b[i]
+    else:
+        for i in range(34,42):
+            rv[i] = a[i]
+
+    #Recipient data
+
+    for i in range(42, 45):
+        rv[i] = a[i] + b[i]
+
+    for i in range(45, 47):
+        rv[i] = a[i].union(b[i])
+
+    rv[47] = len(rv[45])
+    rv[48] = len(rv[46])
+
+    #can add more if we want
+
+    return rv
+
+
+def get_similarity(RDD):
+
+    x = RDD[0]
+    y = RDD[1]
+
+    factors = len(x)
+
+    sim = 0
+
+    #skip 1 because that's 2012 donation amount 
+    for i in range(1, factors):
+        if x[i] == y[i]:
+            sim += 1
+
+    return (x, (y, sim))
+    
+def get_trend(x):
+
+    #trend is based purely on percent of current year of all previous years 
+    
+    sims = len(x)
+    avg_percent = 0
+
+    for i in range(sims):
+        train = x[i][1][0]
+        tot_don_2008 = sum(train[2:18])
+        don_2010 = train[1]
+        percent = don_2010 / tot_don_2008
+        avg_percent += percent / sims
+
+    test = x[0][0]
+
+    return (test, avg_percent)
+
+
+def similarity_algo(test, train, k):
+    
+    pairs = test.cartesian(train)
+    sim_pairs = pairs.map(get_similarity) #second map? #One of these methods should work, but which?
+    top_sim = sim_pairs.filter(lambda x: x[1][1] >= k)
+    sim_hist = top_sim.groupByKey()
+    trends = sim_hist.map(get_trend)
+    predictions = trends.map(lambda x: (sum(x[0][1:17]) * x[1]))
+    return predictions
 
 def main(RDD):
 
@@ -118,10 +199,30 @@ def main(RDD):
 
 if __name__ == '__main__':
 
+    k = sys.argv[1]
+    cycles_back = int(sys.argv[2])
+
     sc = pyspark.SparkContext()
-    data = primary_data_cleaning()
-    keyVals = main(data)
-    keyVals.saveAsTextFile("gs://cs123data/Output/first_attempt_2.txt")
+
+    main_file_path = "gs://cs123data/Data/full_data.csv"
+    
+    year_min = 2012 - cycles_back * 2
+
+    full_data = primary_data_cleaning(main_file_path)
+    train_data = full_data.filter(lambda x: x[0] <= 2010 and  x[0] >= year_min)
+    keyVals_train = main(train_data)
+
+    test_data = full_data.filter(lambda x: x[0] <= 2012 and x[0] >= year_min)
+    keyVals_test = main(test_data)
+
+    zip_path = "gs://cs123data/Auxillary/updated_merger_4.csv"
+    zips = primary_data_cleaning(zip_path)
+    keyVals_train = keyVals_train.leftOuterJoin(zips)
+    keyVals_test = keyVals_test.leftOuterJoin(zips)
+
+    results = similarity_algo(test_data, train_data, k)
+    #still should get error
+    results.saveAsTextFile("gs://cs123data/Output/heres2hope.txt")
 
 #what to run: 
 #gs://cs123data/Scripts/full_works.py
