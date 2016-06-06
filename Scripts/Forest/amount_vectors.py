@@ -22,32 +22,6 @@ Col_Nums = {"cycle":0, "transaction_id":1, "transaction_type":2,"amount":3,"date
             "efec_memo":45,"efec_memo2":46,"efec_transaction_id_orig":47, "efec_org_orig":48,
             "efec_comid_orig":49,"efec_form_type":50 }
 
-# def evaluate_transactions(line):
-
-#     key = line[Col_Nums["bonica_cid"]]
-#     # party = line[Col_Nums["recipient_party"]]  # 100 is dem; 200 is rep; 328 is ind
-
-#     # candidate_cfscore = line[Col_Nums["candidate_cfscore"]]
-
-#     # if party == "100":
-#     #     label = 1
-#     # elif party == "200":
-#     #     label = 2
-#     # else:  # Try to determine Later
-#     #     if candidate_cfscore < 0:
-#     #         label = 1
-#     #     if candidate_cfscore >= 0:
-#     #         label = 2
-
-#     return (key, label)
-
-# def evaluation_determine(a,b):
-
-#     if a != b:
-#         return 3
-#     else:
-#         return a
-
 def finalize_vectors(line):
 
     left = line[1][0]   # Contributor Information
@@ -57,8 +31,7 @@ def finalize_vectors(line):
 
 def build_labels(line):
 
-    key = line[0]
-    label = line[1][1]
+    label = line[0][1]
     features = line[0]
     return (label, features)
 
@@ -83,10 +56,9 @@ def main(main_file, output_directory, year, sc):
     # Evaluate 2012 Testing Data
     data_2012 = full_data.filter(lambda x: x[0] == year)  # Should probably filter out other transaction types in datacleaning
     evaluated_data = data_2012.map(lambda x: (x[Col_Nums["bonica_cid"]], x[Col_Nums["amount"]]))  # Determine the label for each transaction
-    evaluations = evaluated_data.reduceByKey(lambda x, y: add)  # An RDD of Unique Keys
-    # print "evals", evaluations.take(2)
-    print "Evals", evaluations.take(5)
+    evaluations = evaluated_data.reduceByKey(add)  # An RDD of Unique Keys
     # Create Vectors
+
     transactions = full_data.map(build_features)  # Collect Information On Every Transaction
     individuals = transactions.reduceByKey(reduce_individuals)  # Turn Each person iftnto a vector based on their contributions
 
@@ -96,15 +68,20 @@ def main(main_file, output_directory, year, sc):
     vectorized = bypass.map(finalize_vectors)   
 
     non_contributors = vectorized.subtractByKey(evaluations)  # Non-Contributors Are Individuals Who Don't Appear in 
+    # print "non-contr", non_contributors.take(2)
     contributors = vectorized.join(evaluations)
+    # print "contr", contributors.take(2)
     labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1])) 
     labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1][1], x[1][0]))
     combined = labeled_non_contributors.union(labeled_contributors)
-    print "combined", combined.take(3)
+    # print "combined", combined.take(3)
     combined.saveAsTextFile(output_directory)
 
 
 if __name__ == '__main__':
+
+    # Example Call
+    # gcloud dataproc jobs submit pyspark --cluster cs123cluster9 --py-files processingTools.py  amount_vectors.py full AmountVectors
 
     sc = pyspark.SparkContext(appName="amountVectorizer")
     args = sys.argv
@@ -117,7 +94,7 @@ if __name__ == '__main__':
         if args[1] == "practice":
             input_file = "gs://cs123data/Data/practice.csv"
             year = "1984"
-        elif args[2] == "full":
+        elif args[1] == "full":
             input_file = "gs://cs123data/Data/full_data.csv"
             year = "2012"
         else:

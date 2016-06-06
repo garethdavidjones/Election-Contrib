@@ -24,8 +24,8 @@ def main(input_file):
     # for i in range(base_feature_count + 1, num_features + base_feature_count + 1):
     #     features[i] = 10
 
-    tree_model = DecisionTree.trainClassifier(trainingData, numClasses=3, impurity='gini',
-                 categoricalFeaturesInfo=features, maxDepth=4, maxBins=10)
+    tree_model = DecisionTree.trainClassifier(trainingData, numClasses=4, impurity='gini',
+                 categoricalFeaturesInfo=features, maxDepth=8, maxBins=10)
 
     predictions = tree_model.predict(testData.map(lambda x: x.features))
     labels_and_preds = testData.map(lambda x: x.label).zip(predictions)    
@@ -39,5 +39,5 @@ def main(input_file):
 if __name__ == '__main__':
    
 
-    input_file = "gs://cs123data/Output/LabeledVectors3/"
+    input_file = "gs://cs123data/Output/practiceParties/"
     main(input_file)

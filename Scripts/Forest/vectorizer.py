@@ -94,7 +94,7 @@ def main(main_file, output_directory, year, sc):
 
     transformed = individuals.map(create_vectors)
     merged = transformed.leftOuterJoin(zipData)
-    bypass = merged.filter(lambda x: x[1][1] != None)
+    bypass = merged.filter(lambda x: x[1]   [1] != None)
     vectorized = bypass.map(finalize_vectors)   
 
     non_contributors = vectorized.subtractByKey(evaluations)  # Non-Contributors Are Individuals Who Don't Appear in 
@@ -102,7 +102,6 @@ def main(main_file, output_directory, year, sc):
     labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1])) 
     labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1][1], x[1][0]))
     combined = labeled_non_contributors.union(labeled_contributors)
-    print "combined", combined.take(2)
     combined.saveAsTextFile(output_directory)
 
 
@@ -119,7 +118,7 @@ if __name__ == '__main__':
         if args[1] == "practice":
             input_file = "gs://cs123data/Data/practice.csv"
             year = "1984"
-        elif args[2] == "full":
+        elif args[1] == "full":
             input_file = "gs://cs123data/Data/full_data.csv"
             year = "2012"
         else:
@@ -129,4 +128,3 @@ if __name__ == '__main__':
 
         output_directory = "gs://cs123data/Output/" + args[2]
         main(input_file, output_directory, year, sc)
-        

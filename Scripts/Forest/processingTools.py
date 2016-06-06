@@ -97,19 +97,20 @@ BAD_ZIPS = set(['00801', '00802', '00803', '00804', '00805', '00820', '00821', '
                 '96952', '96960', '96970'])
 
 def csv_parser(line):
-    rv = list(csv.reader(StringIO(line), delimiter=","))[0]
-    zipCode = rv[Col_Nums["contributor_zipcode"]]
-    if len(zipCode) == 1:
-        return [1]
-    if len(zipCode) < 5:
-        num_zeros = 5 - len(zipCode)
-        zipCode = str(0) * num_zeros + zipCode 
-    else:
-        zipCode = zipCode[:5]
-    rv[Col_Nums["contributor_zipcode"]] = zipCode
-    if zipCode in BAD_ZIPS:
-        return [1]
+
     try:
+        rv = list(csv.reader(StringIO(line), delimiter=","))[0]
+        zipCode = rv[Col_Nums["contributor_zipcode"]]
+        if len(zipCode) == 1:
+            return [1]
+        if len(zipCode) < 5:
+            num_zeros = 5 - len(zipCode)
+            zipCode = str(0) * num_zeros + zipCode 
+        else:
+            zipCode = zipCode[:5]
+        if zipCode in BAD_ZIPS:
+            return [1]
+        rv[Col_Nums["contributor_zipcode"]] = zipCode
         rv[Col_Nums["amount"]] = int(abs(float(rv[Col_Nums["amount"]])))  # Conver to Integer to Reduce Memory
         rv[Col_Nums["contributor_cfscore"]] = float(rv[Col_Nums["contributor_cfscore"]])  # Consider changing to in fro ^ reason
         rv[Col_Nums["candidate_cfscore"]] = float(rv[Col_Nums["candidate_cfscore"]])
@@ -119,6 +120,7 @@ def csv_parser(line):
         return rv
 
 def data_cleaning(sc, file_in):
+
     lines = sc.textFile(file_in)
     header = lines.first()
     rm = lines.filter(lambda x: x != header)  # Remove header lines
@@ -129,9 +131,13 @@ def data_cleaning(sc, file_in):
 def build_features(line, testing=False):
 
     key = line[Col_Nums["bonica_cid"]]
-    v_cycle = line[Col_Nums["cycle"]]  # Does not need to be a number
+    v_cycle = line[Col_Nums["cycle"]]
     v_amount = line[Col_Nums["amount"]]
-    contr_counter = 1
+
+    if v_cycle != "2012":
+        v_total_amount = v_amount
+    else:
+        v_total_amount = 0
 
     contr_type = line[Col_Nums["contributor_type"]]
     if contr_type == "C":
@@ -237,7 +243,7 @@ def build_features(line, testing=False):
                 "zip": v_zip, 
                 "recipient_type": v_rec_type,
                 "total_counts": 1, 
-                "total_amount": v_amount,
+                "total_amount": v_total_amount,
                 "contr_cfscore": v_contr_cfscore, 
                 "cycles": {
                         v_cycle:
