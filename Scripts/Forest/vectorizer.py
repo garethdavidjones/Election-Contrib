@@ -90,7 +90,7 @@ def main(main_file, output_directory, year, sc):
 
     # Create Vectors
     transactions = full_data.map(build_features)  # Collect Information On Every Transaction
-    individuals = transactions.reduceByKey(reduce_individuals)  # Turn Each person iftnto a vector based on their contributions
+    individuals = transactions.reduceByKey(reduce_individuals)  # Turn Each person into a vector based on their contributions
 
     transformed = individuals.map(create_vectors)
     merged = transformed.leftOuterJoin(zipData)
@@ -101,6 +101,7 @@ def main(main_file, output_directory, year, sc):
     contributors = vectorized.join(evaluations)
     labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1])) 
     labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1][1], x[1][0]))
+    # Make final combination
     combined = labeled_non_contributors.union(labeled_contributors)
     combined.saveAsTextFile(output_directory)
 
