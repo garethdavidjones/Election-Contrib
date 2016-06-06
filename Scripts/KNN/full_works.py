@@ -4,6 +4,8 @@ import csv
 from StringIO import StringIO
 import numpy as np
 
+#File that conducts the entirety of the KNN algorithm
+
 #dictionary to link column numbers with column names from DIME dataset
 Col_Nums = {"cycle":0,"transaction_id":1,"transaction_type":2,"amount":3,"date":4,"bonica_cid":5,"contributor_name":6,"contributor_lname":7,
             "contributor_fname":8,"contributor_mname":9,"contributor_suffix":10,"contributor_title":11,"contributor_ffname":12,"contributor_type":13,
