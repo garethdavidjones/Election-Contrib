@@ -4,6 +4,70 @@
 		"selected_items":
 		[
 			[
+				"test",
+				"testErr	statement"
+			],
+			[
+				"v_",
+				"v_amount	statement"
+			],
+			[
+				"contr",
+				"contributors	statement"
+			],
+			[
+				"ev",
+				"evaluations	statement"
+			],
+			[
+				"Co",
+				"Col_Nums"
+			],
+			[
+				"vec",
+				"vectorized	statement"
+			],
+			[
+				"num",
+				"num_zeros	statement"
+			],
+			[
+				"fu",
+				"full_data	statement"
+			],
+			[
+				"re",
+				"reduce_individuals	function"
+			],
+			[
+				"data",
+				"data_cleaning	function"
+			],
+			[
+				"ar",
+				"Args"
+			],
+			[
+				"for",
+				"format	function"
+			],
+			[
+				"a",
+				"argv	instance"
+			],
+			[
+				"pro",
+				"processingTools	module"
+			],
+			[
+				"col",
+				"Col_Nums	statement"
+			],
+			[
+				"can",
+				"candidate_cfscore	statement"
+			],
+			[
 				"fir",
 				"first_filter	statement"
 			],
@@ -68,10 +132,6 @@
 				"zipCode	statement"
 			],
 			[
-				"test",
-				"testData	statement"
-			],
-			[
 				"min",
 				"main_file"
 			],
@@ -100,16 +160,8 @@
 				"non_contributors"
 			],
 			[
-				"vec",
-				"vectorized"
-			],
-			[
 				"reduce",
 				"reduce_individuals"
-			],
-			[
-				"ev",
-				"evaluate_transactions"
 			],
 			[
 				"in",
@@ -148,24 +200,12 @@
 				"evaluate_contribution"
 			],
 			[
-				"data",
-				"data_2012"
-			],
-			[
 				"ma",
 				"main_file"
 			],
 			[
-				"v_",
-				"v_avg"
-			],
-			[
 				"c",
 				"cf_score"
-			],
-			[
-				"num",
-				"num_general"
 			],
 			[
 				"v",
@@ -236,10 +276,6 @@
 				"contr_cfscore"
 			],
 			[
-				"contr",
-				"contr_type"
-			],
-			[
 				"cs",
 				"csv_parser"
 			],
@@ -254,10 +290,6 @@
 			[
 				"co",
 				"count_x_val"
-			],
-			[
-				"re",
-				"result"
 			],
 			[
 				"fil",
@@ -282,10 +314,6 @@
 			[
 				"AM",
 				"Amt_Reduce"
-			],
-			[
-				"Co",
-				"Count_Reduce"
 			],
 			[
 				"Am",
@@ -322,10 +350,6 @@
 			[
 				"qu",
 				"quant_dom"
-			],
-			[
-				"col",
-				"color_scl"
 			],
 			[
 				"dom",
@@ -490,72 +514,68 @@
 			[
 				"MR",
 				"MRtopContributers"
-			],
-			[
-				"fi",
-				"fields"
-			],
-			[
-				"mi",
-				"main	main()"
-			],
-			[
-				"vis",
-				"visitees"
-			],
-			[
-				"vi",
-				"visitees"
-			],
-			[
-				"visit",
-				"visitors"
-			],
-			[
-				"visi",
-				"visitees"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
+			"contents": "# This file containts the helper functions used for creating vectors\nimport pyspark\nimport csv\nfrom StringIO import StringIO\nfrom operator import add\n\nROM_CF = 1.175483\nOBA_CF = -1.648152 \n\nGENERALS = set(range(1980, 2016, 4))\nALL_YEAR = set(range(1980, 2014, 2))\nRECENT = set(range(2000, 2014, 2))\n\nstateIdeo = {\"WA\": -2, \"OR\": -2, \"CA\": -2, \"NV\": -2, \"ID\": 2, \"MT\": 1,\n             \"WY\":  2, \"UT\":  2, \"AZ\":  1, \"ND\":  1, \"SD\": 2, \"NE\": 2,\n             \"CO\": -1, \"NM\": -2, \"KS\":  2, \"OK\":  2, \"TX\": 2, \"MN\": -2,\n             \"IA\": -1, \"MO\":  0, \"AR\":  2, \"LA\":  2, \"WI\": -2, \"IL\":-2,\n             \"MI\": -2, \"IN\":  0, \"OH\":  0, \"KY\":  2, \"TN\": 2, \"MS\": 2,\n             \"AL\":  2, \"WV\":  2, \"VA\":  0, \"NC\":  0, \"SC\": 1, \"GA\": 1, \"FL\": 0,\n             \"ME\": -2, \"VT\": -2, \"MA\": -2, \"RI\": -2, \"CT\": -2, \"NJ\":-2,\n             \"DE\": -2, \"MD\": -2, \"DC\": -2, \"NY\": -2, \"PA\": -2, \"Ak\": 2,\n             \"HI\": -2\n             }\n\n# Column Numbers\nCol_Nums = {\"cycle\":0, \"transaction_id\":1, \"transaction_type\":2,\"amount\":3,\"date\":4,\n            \"bonica_cid\":5,\"contributor_name\":6,\"contributor_lname\":7, \"contributor_fname\":8,\n            \"contributor_mname\":9,\"contributor_suffiline\":10,\"contributor_title\":11,\n            \"contributor_ffname\":12,\"contributor_type\":13, \"contributor_gender\":14,\n            \"contributor_address\":15,\"contributor_city\":16,\"contributor_state\":17,\n            \"contributor_zipcode\":18,\"contributor_occupation\":19,\"contributor_employer\":20,\n            \"contributor_category\":21,\"contributor_category_order\":22,\"is_corp\":23,\n            \"organization_name\":24,\"parent_organization_name\":25,\"recipient_name\":26,\n            \"bonica_rid\":27,\"recipient_party\":28,\"recipient_type\":29,\"recipient_state\":30,\n            \"recipient_category\":31,\"recipient_category_order\":32,\"recipient_district\":33,\n            \"seat\":34,\"election_type\":35,\"contributor_cfscore\":36,\"candidate_cfscore\":37,\n            \"latitude\":38,\"longitude\":39,\"gis_confidence\":40,\"contributor_district_90s\":41,\n            \"contributor_district_00s\":42,\"contributor_district_10s\":43, \"lname_frequency\":44,\n            \"efec_memo\":45,\"efec_memo2\":46,\"efec_transaction_id_orig\":47, \"efec_org_orig\":48,\n            \"efec_comid_orig\":49,\"efec_form_type\":50 }\n\n# Zip codes that do not have demographic information available; military bases and territories\nBAD_ZIPS = set(['00801', '00802', '00803', '00804', '00805', '00820', '00821', '00822', '00823', '00824', '00830', \n                '00831', '00840', '00841', '00850', '00851', '09002', '09003', '09004', '09005', '09006', '09007', \n                '09008', '09009', '09010', '09011', '09012', '09013', '09014', '09020', '09021', '09028', '09033', \n                '09034', '09038', '09042', '09046', '09049', '09051', '09053', '09054', '09055', '09058', '09059', \n                '09060', '09063', '09067', '09068', '09069', '09075', '09079', '09081', '09086', '09088', '09090', \n                '09092', '09094', '09095', '09096', '09099', '09100', '09102', '09103', '09104', '09107', '09112', \n                '09114', '09123', '09126', '09128', '09131', '09136', '09137', '09138', '09139', '09140', '09142', \n                '09143', '09154', '09172', '09173', '09177', '09180', '09186', '09201', '09211', '09213', '09214', \n                '09226', '09227', '09229', '09237', '09245', '09250', '09261', '09263', '09264', '09265', '09267', \n                '09301', '09302', '09304', '09305', '09306', '09307', '09308', '09309', '09310', '09311', '09312', \n                '09313', '09314', '09315', '09316', '09317', '09320', '09321', '09327', '09328', '09330', '09331', \n                '09332', '09333', '09334', '09336', '09337', '09338', '09339', '09340', '09342', '09343', '09344', \n                '09347', '09348', '09350', '09351', '09352', '09353', '09354', '09355', '09356', '09357', '09359', \n                '09360', '09363', '09364', '09365', '09366', '09367', '09368', '09369', '09370', '09371', '09372', \n                '09373', '09374', '09375', '09376', '09377', '09378', '09380', '09382', '09383', '09384', '09387', \n                '09391', '09393', '09394', '09396', '09397', '09399', '09403', '09421', '09447', '09454', '09459', \n                '09461', '09463', '09464', '09468', '09469', '09470', '09494', '09496', '09498', '09501', '09502', \n                '09503', '09504', '09505', '09506', '09507', '09508', '09509', '09510', '09511', '09513', '09517', \n                '09524', '09532', '09534', '09543', '09545', '09549', '09550', '09554', '09556', '09557', '09564', \n                '09565', '09566', '09567', '09568', '09569', '09570', '09573', '09574', '09575', '09576', '09577', \n                '09578', '09579', '09581', '09582', '09586', '09587', '09588', '09589', '09590', '09591', '09593', \n                '09594', '09596', '09599', '09602', '09603', '09604', '09605', '09606', '09607', '09608', '09609', \n                '09610', '09611', '09613', '09617', '09618', '09620', '09621', '09622', '09623', '09624', '09625', \n                '09626', '09627', '09630', '09631', '09633', '09636', '09642', '09643', '09645', '09647', '09648', \n                '09649', '09701', '09702', '09703', '09704', '09705', '09706', '09707', '09708', '09709', '09710', \n                '09711', '09713', '09714', '09715', '09716', '09717', '09718', '09719', '09720', '09721', '09722', \n                '09723', '09724', '09726', '09727', '09728', '09729', '09730', '09731', '09732', '09733', '09734', \n                '09735', '09736', '09737', '09738', '09739', '09741', '09742', '09743', '09744', '09745', '09747', \n                '09748', '09749', '09750', '09751', '09752', '09754', '09755', '09756', '09757', '09758', '09759', \n                '09762', '09769', '09771', '09777', '09780', '09798', '09801', '09803', '09804', '09805', '09806', \n                '09807', '09808', '09809', '09810', '09811', '09812', '09813', '09814', '09815', '09816', '09817', \n                '09818', '09820', '09821', '09822', '09823', '09824', '09825', '09826', '09827', '09828', '09829', \n                '09830', '09831', '09832', '09833', '09834', '09835', '09836', '09837', '09838', '09839', '09840', \n                '09841', '09842', '09844', '09845', '09846', '09852', '09853', '09855', '09858', '09859', '09862', \n                '09865', '09868', '09870', '09880', '09890', '09892', '09898', '34002', '34004', '34006', '34007', \n                '34008', '34011', '34020', '34021', '34022', '34023', '34024', '34025', '34030', '34031', '34032', \n                '34033', '34034', '34035', '34036', '34037', '34038', '34039', '34041', '34042', '34050', '34055', \n                '34058', '34060', '34078', '34090', '34091', '34092', '34093', '34095', '34098', '34099', '87115', \n                '96201', '96202', '96203', '96204', '96205', '96206', '96207', '96209', '96213', '96214', '96218', \n                '96220', '96224', '96257', '96258', '96259', '96260', '96262', '96264', '96266', '96267', '96269', \n                '96271', '96275', '96276', '96278', '96283', '96284', '96297', '96303', '96306', '96309', '96310', \n                '96319', '96321', '96322', '96323', '96326', '96328', '96330', '96336', '96337', '96338', '96339', \n                '96343', '96346', '96347', '96348', '96349', '96350', '96351', '96362', '96365', '96367', '96368', \n                '96370', '96372', '96373', '96374', '96375', '96376', '96377', '96378', '96379', '96384', '96386', \n                '96387', '96388', '96401', '96426', '96427', '96444', '96447', '96501', '96502', '96503', '96507', \n                '96510', '96511', '96515', '96516', '96517', '96518', '96520', '96521', '96522', '96530', '96531', \n                '96532', '96534', '96535', '96537', '96538', '96540', '96541', '96542', '96543', '96544', '96546',\n                '96548', '96549', '96550', '96551', '96552', '96553', '96554', '96555', '96557', '96562', '96577', \n                '96595', '96598', '96599', '96601', '96602', '96603', '96604', '96605', '96606', '96607', '96608', \n                '96609', '96610', '96611', '96612', '96613', '96614', '96615', '96616', '96617', '96619', '96620', \n                '96621', '96622', '96624', '96628', '96629', '96643', '96650', '96657', '96660', '96661', '96662', \n                '96663', '96664', '96665', '96666', '96667', '96668', '96669', '96670', '96671', '96672', '96673', \n                '96674', '96675', '96677', '96678', '96679', '96681', '96682', '96683', '96686', '96687', '96698', \n                '96799', '96910', '96912', '96913', '96915', '96916', '96917', '96919', '96921', '96923', '96928', \n                '96929', '96931', '96932', '96939', '96940', '96941', '96942', '96943', '96944', '96950', '96951', \n                '96952', '96960', '96970'])\n\ndef csv_parser(line):\n\n    try:\n        rv = list(csv.reader(StringIO(line), delimiter=\",\"))[0]\n        zipCode = rv[Col_Nums[\"contributor_zipcode\"]]\n        if len(zipCode) == 1:\n            return [1]\n        if len(zipCode) < 5:\n            num_zeros = 5 - len(zipCode)\n            zipCode = str(0) * num_zeros + zipCode \n        else:\n            zipCode = zipCode[:5]\n        if zipCode in BAD_ZIPS:\n            return [1]\n        rv[Col_Nums[\"contributor_zipcode\"]] = zipCode\n        rv[Col_Nums[\"amount\"]] = int(abs(float(rv[Col_Nums[\"amount\"]])))  # Conver to Integer to Reduce Memory\n        rv[Col_Nums[\"contributor_cfscore\"]] = float(rv[Col_Nums[\"contributor_cfscore\"]])  # Consider changing to in fro ^ reason\n        rv[Col_Nums[\"candidate_cfscore\"]] = float(rv[Col_Nums[\"candidate_cfscore\"]])\n        return rv\n    except:\n        rv = [1]  # This row will be removed in data cleaning\n        return rv\n\ndef data_cleaning(sc, file_in):\n\n    lines = sc.textFile(file_in)\n    header = lines.first()\n    rm = lines.filter(lambda x: x != header)  # Remove header lines\n    data = rm.map(csv_parser)\n    data = data.filter(lambda x: len(x) == 51)\n    return data\n\ndef build_features(line, testing=False):\n\n    key = line[Col_Nums[\"bonica_cid\"]]\n    v_cycle = line[Col_Nums[\"cycle\"]]\n    v_amount = line[Col_Nums[\"amount\"]]\n\n    if v_cycle != \"2012\":\n        v_total_amount = v_amount\n    else:\n        v_total_amount = 0\n\n    contr_type = line[Col_Nums[\"contributor_type\"]]\n    if contr_type == \"C\":\n        v_contr_type = 0\n    elif contr_type == \"I\":\n        v_contr_type = 1\n    else:\n        v_contr_type = 2\n\n    # Gender\n    gender = line[Col_Nums[\"contributor_gender\"]]\n    if gender == \"M\":\n        v_gender = 0\n    elif gender == \"F\":\n        v_gender = 1\n    else:\n        v_gender = 2\n\n    # What type of enitee recieved the money\n    rec_type = line[Col_Nums[\"recipient_type\"]]\n    if rec_type == \"COMM\":\n        v_rec_type = 0\n    elif rec_type == \"CAND\":\n        v_rec_type = 1\n    else:\n        v_rec_type = 2\n\n    # Constributors Ideology\n    contr_cfscore = line[Col_Nums[\"contributor_cfscore\"]]\n    if (contr_cfscore > -1.8 and contr_cfscore <= -1.1):\n        v_contr_cfscore = -2\n\n    elif (contr_cfscore > -1.1 and contr_cfscore < -0.6):\n        v_contr_cfscore = -1\n\n    elif (contr_cfscore >= -0.6 and contr_cfscore <= 0.4):\n        v_contr_cfscore = 0\n\n    elif (contr_cfscore <= 0.8 and contr_cfscore > 0.4):\n        v_contr_cfscore = 1\n\n    elif (contr_cfscore <= 1.2 and contr_cfscore > 0.8):\n        v_contr_cfscore = 2\n\n    elif contr_cfscore > 1.2:\n        v_contr_cfscore = 3\n\n    else:  # Contr_cfscore <= -1.9\n        v_contr_cfscore = -3\n\n\n    # Need to analyze whether the same distribution exists for candidates as it does for contributors\n    candidate_cfscore = line[Col_Nums[\"candidate_cfscore\"]]\n\n    if (candidate_cfscore > -1.8 and candidate_cfscore <= -1.1):\n        v_candidate_cfscore = -2\n\n    elif (candidate_cfscore > -1.1 and candidate_cfscore < -0.6):\n        v_candidate_cfscore = -1\n    elif (candidate_cfscore >= -0.6 and candidate_cfscore <= 0.4):\n        v_candidate_cfscore = 0\n\n    elif (candidate_cfscore <= 0.8 and candidate_cfscore > 0.4):\n        v_candidate_cfscore = 1\n\n    elif (candidate_cfscore <= 1.2 and candidate_cfscore > 0.8):\n        v_candidate_cfscore = 2\n\n    elif candidate_cfscore > 1.2:\n        v_candidate_cfscore = 3\n\n    else:  # i.e candidate_cfscore <= -1.9\n        v_candidate_cfscore = -3\n    \n    if v_candidate_cfscore != v_contr_cfscore:\n        ideoDifference = abs(v_candidate_cfscore - v_contr_cfscore)\n        if ideoDifference == 1:\n            v_id_diff = 1\n        elif ideoDifference == 2:\n            v_id_diff = 2\n        else:\n            v_id_diff = 3\n    else:\n        v_id_diff = 0\n\n    party = line[Col_Nums[\"recipient_party\"]]  # 100 is dem; 200 is rep; 328 is ind\n\n    if party == \"100\":\n        label = 1\n    elif party == \"200\":\n        label = 2\n    else:   # Try to determine Later\n        if v_candidate_cfscore < 0:\n            label = 1\n        if v_candidate_cfscore >= 0:\n            label = 2\n\n    v_state = line[Col_Nums[\"contributor_state\"]]\n    v_zip = line[Col_Nums[\"contributor_zipcode\"]]\n\n    features = {\"contributor_types\": v_contr_type, \n                \"gender\": v_gender, \n                \"state\": v_state, \n                \"ideo_dif\": v_id_diff, \n                \"zip\": v_zip, \n                \"recipient_type\": v_rec_type,\n                \"total_counts\": 1, \n                \"total_amount\": v_total_amount,\n                \"contr_cfscore\": v_contr_cfscore, \n                \"cycles\": {\n                        v_cycle:\n                        {\"count\": 1, \"amount\": v_amount,\n                            1: {\"label\": label, \"candidate_cfscore\": v_candidate_cfscore}}}}\n\n    vector = (key, features)\n    return vector\n\ndef reduce_individuals(a, b):\n\n    b_year = list(b[\"cycles\"])[0]\n\n    a[\"total_amount\"] += b[\"total_amount\"]\n    a[\"total_counts\"] += 1\n\n    # Get the most recent characteristics for the individual\n    if all(i < b_year for i in list(a[\"cycles\"].keys())):\n        a[\"state\"] = b[\"state\"]\n        a[\"contr_cfscore\"] = b[\"contr_cfscore\"]\n        a[\"zip\"] = b[\"zip\"]\n        a[\"contributor_types\"] = b[\"contributor_types\"]\n        a[\"recipient_type\"] = b[\"recipient_type\"]\n\n    # Check if year is already in the dataset\n    if b_year not in a[\"cycles\"]:\n        a[\"cycles\"][b_year] = b[\"cycles\"][b_year]\n    else:\n        a[\"cycles\"][b_year][\"amount\"] += b[\"cycles\"][b_year][\"amount\"]\n        a[\"cycles\"][b_year][\"count\"] +=  1\n        trans_num = a[\"cycles\"][b_year][\"count\"]\n        a[\"cycles\"][b_year][trans_num] = b[\"cycles\"][b_year][1]\n\n    return a\n\ndef create_vectors(line):\n\n    values = line[1]\n    cid = line[0]\n    cycles = set(values[\"cycles\"].keys())\n    num_contributions = values[\"total_counts\"]\n    num_recent = len(RECENT - cycles)\n    num_general = len(GENERALS - cycles)\n    zipCode = values[\"zip\"]\n\n    gender = values[\"gender\"]\n    cf_score = values[\"contr_cfscore\"]\n    recip_type = values[\"recipient_type\"]\n    contr_type = values[\"contributor_types\"]\n\n    # Cotributor Type\n    if contr_type == \"C\":\n        v_contrb_type = 0\n    elif contr_type == \"I\":\n        v_contrb_type = 1\n    else:\n        v_contrb_type = 2\n\n\n    # Recipient Type\n    if values['recipient_type'] == \"COMM\":\n        v_recip = 0\n    elif values['recipient_type'] == \"CAND\":\n        v_recip = 1\n    else:\n        v_recip = 2\n\n    # Total Amount Donated Excluding 2012\n    previous_amt = 0\n    for year in cycles:\n        if year != \"2012\":\n            previous_amt += values[\"cycles\"][year][\"amount\"]\n\n    # Closer on which spectrum\n    ob_dif = abs(OBA_CF - cf_score)\n    rom_dif = abs(ROM_CF - cf_score)\n    if ob_dif < rom_dif: # Ideology more similar to Obama than Romney\n        v_nearer = 0\n    else:\n        v_nearer = 1\n\n    avg_contributed = values[\"total_amount\"] / len(cycles)\n    if avg_contributed <= 500:\n        v_avg = 0\n    elif (avg_contributed > 500) and (avg_contributed <= 5000):\n        v_avg = 1\n    elif (avg_contributed > 5000) and (avg_contributed < 50000):\n        v_avg = 2\n    else:\n        v_avg = 3\n                        #      1            2          3        4       5       6            \n    return (zipCode, [cid, num_recent, num_general, gender, cf_score, v_avg, v_nearer, \n                      v_contrb_type, v_recip, previous_amt, num_contributions])   \n",
+			"file": "processingTools.py",
+			"file_size": 16154,
+			"file_write_time": 131096579835838696,
+			"settings":
+			{
+				"buffer_size": 16199,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Google Cloud Tutorial\n\n\nInitilize Our Brand of Cluster: \n    Only do in case of failure\n\n    gcloud dataproc clusters create cs123cluster9 --bucket cs123data --zone us-central1-a \\\n        --master-machine-type n1-standard-2 --master-boot-disk-size 100 --num-workers 2\n        --worker-machine-type n1-standard-1 --worker-boot-disk-size 60 \n        --scopes 'https://www.googleapis.com/auth/cloud-platform' --project cs123-1308 \n        --initialization-actions 'gs://cs123data/zeppelin.sh' --initialization-action-timeout 15m\nExecutorLostFailure (executor 87 exited caused by one of the running tasks) Reason: Container killed by YARN for ex\ngsutil commands\n    \n    //Copy All files in bucket directory with given ending to current directory\n    gsutil cp gs://my-bucket/*.txt .\n\n\ngcloud dataproc jobs submit pyspark --cluster cs123cluster9 \n\ngcloud dataproc jobs submit pyspark --cluster cs123-gareth --py-files processingTools.py \\\n vectorizer.py practice tester3\n\ngcloud compute ssh cs123cluster9-m\n\nInstructions: https://cloud.google.com/dataproc/cluster-web-interfaces\n\ngcloud compute ssh  --zone=us-east1-b \\\n  --ssh-flag=\"-D 1080\" --ssh-flag=\"-N\" --ssh-flag=\"-n\" cs123-highmem-m\n\nThen In A Seperate Terminal:\n\n      /usr/bin/google-chrome \\\n    --proxy-server=\"socks5://localhost:1080\" \\\n    --host-resolver-rules=\"MAP * 0.0.0.0 , EXCLUDE localhost\" \\\n    --user-data-dir=/tmp/\n\nNavigate To http://cs123cluster9-m:8080\n\n\nspark-submit vectorizer.py --py-files processingTools.py \n\n      /usr/bin/google-chrome \\\n    --proxy-server=\"socks5://localhost:1080\" \\\n    --host-resolver-rules=\"MAP * 0.0.0.0 , EXCLUDE localhost\" \\\n    --user-data-dir=/tmp/",
 			"file": "/media/gareth/Project/Election-Contrib/Scripts/GCloudNotes.txt",
+			"file_size": 1206,
+			"file_write_time": 131092998184759117,
 			"settings":
 			{
-				"buffer_size": 1206,
+				"buffer_size": 1656,
 				"line_ending": "Unix"
 			}
 		},
 		{
+			"file": "/media/gareth/Project/Election-Contrib/Scripts/KNN/full_works.py",
+			"settings":
+			{
+				"buffer_size": 6452,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "import pyspark\nfrom pyspark.mllib.tree import RandomForest, RandomForestModel\nfrom pyspark.mllib.util import MLUtils\n\nsc = pyspark.SparkContext(appName=\"RandomForest\")\n\n# Load and parse the data file into an RDD of LabeledPoint.\ndata = MLUtils.loadLabeledPoints(sc, 'gs://cs123data/Output/PartyVectors/')\n# Split the data into training and test sets\ntrainingData, testData = data.randomSplit([0.7, 0.3])\ntrainingData.cache()\n\n# The depth of the tree proved to be a significant bottle neck  \nmodel = RandomForest.trainClassifier(trainingData, numClasses=4, categoricalFeaturesInfo={},\n                                     numTrees=700, featureSubsetStrategy=\"auto\",\n                                     impurity='gini', maxDepth=8, maxBins=12)\n\n# Evaluate model on test instances and compute test error\npredictions = model.predict(testData.map(lambda x: x.features))\nlabelsAndPredictions = testData.map(lambda lp: lp.label).zip(predictions)\ntestErr = labelsAndPredictions.filter(lambda (v, p): v != p).count() / float(testData.count())\nprint(\"\")\nprint(\"\")\nprint('Test Error: ' + str(testErr))",
+			"file": "classification_random_forest.py",
+			"file_size": 1089,
+			"file_write_time": 131096674405138431,
+			"settings":
+			{
+				"buffer_size": 1091,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "\nimport pyspark\nfrom pyspark.mllib.regression import LabeledPoint\nfrom pyspark.mllib.tree import RandomForest\nfrom pyspark.mllib.util import MLUtils\nfrom pyspark.mllib.tree import DecisionTree, DecisionTreeModel\n\ndef main(input_file):\n\n    sc = pyspark.SparkContext(appName=\"DecisionTree\")\n\n    data = MLUtils.loadLabeledPoints(sc, input_file)\n\n    trainingData, testData = data.randomSplit([0.70, 0.3])\n    # Cache in memory for faster training\n    trainingData.cache()\n\n    model = DecisionTree.trainClassifier(trainingData, numClasses=4, impurity='gini',\n                 categoricalFeaturesInfo={}, maxDepth=16, maxBins=10)\n\n    predictions = model.predict(testData.map(lambda x: x.features))\n    labelsAndPredictions = testData.map(lambda lp: lp.label).zip(predictions)\n    testErr = labelsAndPredictions.filter(lambda (v, p): v != p).count() / float(testData.count())\n    # print tree_model.toDebugString()\n    print \"\"\n    print \"\"\n    print \"Test Erros: {}\".format(round(testErr,4))\n\n\nif __name__ == '__main__':\n   \n\n    input_file = \"gs://cs123data/Output/PartyVectors/\"\n    main(input_file)\n",
 			"file": "decisionTree.py",
+			"file_size": 1101,
+			"file_write_time": 131097111952728688,
 			"settings":
 			{
-				"buffer_size": 1419,
+				"buffer_size": 1101,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "vectorizer.py",
+			"file": "rf_donations.py",
 			"settings":
 			{
-				"buffer_size": 19598,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "\n# http://www.forbes.com/sites/betsyschiffman/2015/11/10/full-list-most-expensive-zip-codes-in-2015/7/#5a128f'71290'7\n# top20zips = set(['94027', '11962', '10012', '81656', '10013', '33109', '94062', '91302', '81611', '94010', \n#                  '94022', '07620', '94920', '90210', '10065', '89413', '90402', '11976', '80111', '94957'])\n\n# next100zips = set(['11975', '94123', '93108', '02108', '90077', '11932', '10011', '33156', '90265', '09027', '10014', \n#                    '10006', '94028', '10024', '33143', '94301', '92662', '10007', '94920', '95030', '90272', '92067', \n#                    '92657', '11568', '94133', '91108', '95070', '10021', '81654', '06831', '95030', '92661', '90266', \n#                    '93920', '92625', '10023', '94024', '90049', '90069', '11024', '92651', '92091', '11930', '10001', \n#                    '94904', '10022', '94022', '10069', '06870', '11959', '91008', '10004', '98039', '02554', '34102', \n#                    '07976', '92014', '10580', '10003', '10577', '80113', '06870', '33149', '11231', '94306', '93953', \n#                    '02493', '06830', '90212', '94506', '90274', '06840', '11217', '32461', '83014', '81655', '94303', \n#                    '10075', '60043', '80121', '92118', '92660', '11765', '89402', '07078', '02574', '02116', '93066', \n#                    '90254', '06878', '92037', '11968', '90401', '02210', '93460', '96714', '91302', '02467', '94507', \n#                    '94025'])",
-			"settings":
-			{
-				"buffer_size": 1458,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "\n    # zipData = sc.textFile(\"gs://cs123data/Auxillary/updated_merger_4.csv\")\n    # zipData = zipData.map(parse_zipcodes)\n\n    # zipData.cache()  # Look into doing this efficiently\n    \n    # Evaluate 2012 Testing Data\n    # print \"full data check\", full_data.take(2)\n    # data_2012 = full_data.filter(lambda x: x[0] == 2012)  # Should probably filter out other transaction types in datacleaning\n    # print \"Anything in there? \", data_2012.take(2)\n    # evaluated_data = data_2012.map(evaluate_transactions)  # Determine the label for each transaction\n    # print \"Raw eval\", evaluated_data.take(2)\n    # evaluations = evaluated_data.reduceByKey(lambda x, y: x)  # An RDD of Unique Keys\n    # print \"eval reduced\",  evaluations.take(2)\n\n\n\n    # merged = transformed.leftOuterJoin(zipData)\n    # # print \"Post Merged: \", merged.first()\n    # print \"Debug This \", merged.filter(lambda x: x[1][1] == None).map(lambda x: x[0]).saveAsTextFile(\"gs://cs123data/Output/MissingZips5\") \n    # bypass = merged.filter(lambda x: x[1][1] != None)\n    # # print \"By Pass Check: \", bypass.take(4)\n    # vectorized = bypass.map(finalize_vectors)\n    # # print \"Merge Cleaned: \", vectorized.take(2)\n    # vectorized = vectorized.filter(lambda x: x[1] != None)\n    # # Finalize Ouput Data\n    # non_contributors = vectorized.subtractByKey(evaluations)  # Non-Contributors Are Individuals Who Don't Appear in \n    # contributors = vectorized.join(evaluations)\n    # labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1])) \n    # # print \"Non-Contr: \", labeled_non_contributors.first()\n    # labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1][1], x[1][0]))\n    # # print \"Contr: \", labeled_contributors.first()\n    # combined = labeled_non_contributors.union(labeled_contributors)\n\n    # # print \"Combined\", combined.take(4)\n    # combined.saveAsTextFile(output_directory)",
-			"settings":
-			{
-				"buffer_size": 1897,
+				"buffer_size": 1276,
 				"line_ending": "Unix"
 			}
 		}
@@ -638,6 +658,18 @@
 	},
 	"file_history":
 	[
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/Homework 4",
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/random_forest.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/decisionTree.py",
+		"/home/gareth/Pictures/google-cloud-dataproc-metainfo%2F9adc2079-d170-43cb-848d-fe6f0e480458%2Fjobs%2Fe34c4656-3f35-401c-a70f-c2f4bd18bb68%2Fdriveroutput.000000000",
+		"/home/gareth/Pictures/google-cloud-dataproc-metainfo%2F9adc2079-d170-43cb-848d-fe6f0e480458%2Fjobs%2Fe34c4656-3f35-401c-a70f-c2f4bd18bb68%2F_RECEIVED",
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/amount_vectors.py",
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/vectorizer.py",
+		"/home/gareth/Pictures/Output%2FAmountVectors2%2Fpart-00000",
+		"/home/gareth/Pictures/Output%2Ftester12%2Fpart-00035",
+		"/home/gareth/Pictures/Output%2Ftester10%2Fpart-00017",
+		"/media/gareth/Project/Election-Contrib/Scripts/Forest/processingTools.py",
+		"/home/gareth/Pictures/Output%2Ftester3%2Fpart-00000",
 		"/home/gareth/Downloads/Output%2FLabeledVectors3%2Fpart-02231",
 		"/home/gareth/Downloads/Output%2FLabeledVectors2%2Fpart-00035",
 		"/home/gareth/Downloads/Output%2FLabeledVectors2%2Fpart-00000",
@@ -649,7 +681,6 @@
 		"/home/gareth/Downloads/Output%2FVectorPractice%2Fpart-00000",
 		"/home/gareth/.config/sublime-text-3/Packages/Anaconda/Anaconda.sublime-settings",
 		"/home/gareth/Downloads/Output%2FMissingZips%2Fpart-00001",
-		"/media/gareth/Project/Election-Contrib/Scripts/Forest/vectorizer.py",
 		"/home/gareth/Downloads/Data%2Fincome_cat_rdd%2Fpart-00000",
 		"/home/gareth/Downloads/Data%2Fupdated_merger_3.csv",
 		"/media/gareth/Project/Election-Contrib/Scripts/merger_3.py",
@@ -667,7 +698,6 @@
 		"/home/gareth/.cache/.fr-4a9lGR/ak0000120101.dp",
 		"/home/gareth/.cache/.fr-6MO806/ak20101.dp.prd.packinglist.txt",
 		"/media/gareth/Project/Election-Contrib/Scripts/Forest/forest.sublime-workspace",
-		"/media/gareth/Project/Election-Contrib/Scripts/Forest/decisionTree.py",
 		"/home/gareth/.config/sublime-text-3/Packages/User/Anaconda.sublime-settings",
 		"/home/gareth/Desktop/Untitled Document",
 		"/home/gareth/Desktop/API-keys",
@@ -755,17 +785,7 @@
 		"/home/gareth/spark-1.6.1/examples/src/main/python/logistic_regression.py",
 		"/home/gareth/spark-1.6.1/python/pyspark/profiler.py",
 		"/home/gareth/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
-		"/home/gareth/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
-		"/home/gareth/Documents/Programming Assignments/task4.py",
-		"/home/gareth/Documents/garethjones/pa2/bool_table.h",
-		"/home/gareth/Documents/garethjones/pa2/game.c",
-		"/home/gareth/Documents/STAT/Midterm Review",
-		"/home/gareth/Documents/garethjones/pa2/double_table.c",
-		"/home/gareth/Documents/garethjones/pa2/bool_table.c",
-		"/home/gareth/Documents/garethjones/pa1/task4.py",
-		"/home/gareth/Documents/garethjones/pa1/task3.py",
-		"/home/gareth/Documents/garethjones/pa1/task2.py",
-		"/home/gareth/Documents/garethjones/pa1/task1.py"
+		"/home/gareth/.config/sublime-text-3/Packages/User/Preferences.sublime-settings"
 	],
 	"find":
 	{
@@ -783,6 +803,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"contr_counter",
+			"print",
+			"stateI",
+			"prepare",
 			"1980",
 			"cycle",
 			"cycke",
@@ -887,24 +911,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 4,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/media/gareth/Project/Election-Contrib/Scripts/GCloudNotes.txt",
+					"file": "processingTools.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1206,
+						"buffer_size": 16199,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								998,
-								998
+								9593,
+								9593
 							]
 						],
 						"settings":
@@ -912,61 +936,150 @@
 							"BracketHighlighterBusy": false,
 							"bh_regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1568.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/media/gareth/Project/Election-Contrib/Scripts/GCloudNotes.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1656,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								21,
+								21
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
 								"bh_angle_close",
-								"bh_angle_content"
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
 							],
 							"highlight_line": false,
 							"syntax": "Packages/C++/C.sublime-syntax",
@@ -992,241 +1105,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "decisionTree.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1419,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								941,
-								941
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"auto_complete": false,
-							"bh_regions":
-							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content"
-							],
-							"highlight_line": false,
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"vintage":
-							{
-								"_vintageous_glue_until_normal_mode": false,
-								"action": null,
-								"action_count": "",
-								"mode": "mode_normal",
-								"motion": null,
-								"motion_count": "",
-								"must_capture_register_name": false,
-								"normal_insert_count": "1",
-								"partial_sequence": "",
-								"register": "\"",
-								"sequence": "",
-								"xpos": 52
-							}
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "vectorizer.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 19598,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1619,
-								1619
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content"
-							],
-							"highlight_line": false,
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"vintage":
-							{
-								"_vintageous_glue_until_normal_mode": false,
-								"action": null,
-								"action_count": "",
-								"mode": "mode_normal",
-								"motion": null,
-								"motion_count": "",
-								"must_capture_register_name": false,
-								"normal_insert_count": "1",
-								"partial_sequence": "",
-								"register": "\"",
-								"sequence": "",
-								"xpos": 0
-							}
-						},
-						"translation.x": 0.0,
-						"translation.y": 5782.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 3,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 1,
-			"sheets":
-			[
+				},
 				{
 					"buffer": 2,
-					"file": "vectorizer.py",
+					"file": "/media/gareth/Project/Election-Contrib/Scripts/KNN/full_works.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 19598,
+						"buffer_size": 6452,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								19502,
-								19502
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1234,83 +1130,67 @@
 							"BracketHighlighterBusy": false,
 							"bh_regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content"
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
 							],
-							"highlight_line": false,
 							"syntax": "Packages/Python/Python.sublime-syntax",
 							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"vintage":
-							{
-								"_vintageous_glue_until_normal_mode": false,
-								"action": null,
-								"action_count": "",
-								"mode": "mode_normal",
-								"motion": null,
-								"motion_count": "",
-								"must_capture_register_name": false,
-								"normal_insert_count": "1",
-								"partial_sequence": "",
-								"register": "\"",
-								"sequence": "",
-								"xpos": 0
-							}
+							"translate_tabs_to_spaces": true
 						},
-						"translation.x": 0.0,
+						"translation.x": -0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
@@ -1319,18 +1199,19 @@
 				},
 				{
 					"buffer": 3,
+					"file": "classification_random_forest.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1458,
+						"buffer_size": 1091,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1458,
-								1458
+								802,
+								802
 							]
 						],
 						"settings":
@@ -1338,61 +1219,61 @@
 							"BracketHighlighterBusy": false,
 							"bh_regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content"
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
 							],
 							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
@@ -1400,103 +1281,183 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 4,
+					"file": "decisionTree.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1897,
+						"buffer_size": 1101,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								45,
-								45
+								986,
+								986
 							]
 						],
 						"settings":
 						{
 							"BracketHighlighterBusy": false,
-							"auto_name": "",
 							"bh_regions":
 							[
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 51.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 5,
+					"file": "rf_donations.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1276,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
 								"bh_tag_close",
-								"bh_tag_content"
+								"bh_tag_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
 							],
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"vintage":
-							{
-								"_vintageous_glue_until_normal_mode": false,
-								"action": null,
-								"action_count": "",
-								"mode": "mode_normal",
-								"motion": null,
-								"motion_count": "",
-								"must_capture_register_name": false,
-								"normal_insert_count": "1",
-								"partial_sequence": "",
-								"register": "\"",
-								"sequence": "",
-								"xpos": 44
-							}
+							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

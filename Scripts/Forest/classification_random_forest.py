@@ -9,16 +9,16 @@ data = MLUtils.loadLabeledPoints(sc, 'gs://cs123data/Output/PartyVectors/')
 # Split the data into training and test sets
 trainingData, testData = data.randomSplit([0.7, 0.3])
 trainingData.cache()
-testData.cache()
 
+# The depth of the tree proved to be a significant bottle neck
 model = RandomForest.trainClassifier(trainingData, numClasses=4, categoricalFeaturesInfo={},
-                                     numTrees=400, featureSubsetStrategy="auto",
-                                     impurity='gini', maxDepth=4, maxBins=12)
+                                     numTrees=700, featureSubsetStrategy="auto",
+                                     impurity='gini', maxDepth=8, maxBins=12)
 
 # Evaluate model on test instances and compute test error
 predictions = model.predict(testData.map(lambda x: x.features))
 labelsAndPredictions = testData.map(lambda lp: lp.label).zip(predictions)
 testErr = labelsAndPredictions.filter(lambda (v, p): v != p).count() / float(testData.count())
-print('Test Error = ' + str(testErr))
-print('Learned classification forest model:')
-# print(model.toDebugString())
+print("")
+print("")
+print('Test Error: ' + str(testErr))

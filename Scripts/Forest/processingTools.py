@@ -22,6 +22,7 @@ stateIdeo = {"WA": -2, "OR": -2, "CA": -2, "NV": -2, "ID": 2, "MT": 1,
              "HI": -2
              }
 
+# Column Numbers
 Col_Nums = {"cycle":0, "transaction_id":1, "transaction_type":2,"amount":3,"date":4,
             "bonica_cid":5,"contributor_name":6,"contributor_lname":7, "contributor_fname":8,
             "contributor_mname":9,"contributor_suffiline":10,"contributor_title":11,
@@ -147,6 +148,7 @@ def build_features(line, testing=False):
     else:
         v_contr_type = 2
 
+    # Gender
     gender = line[Col_Nums["contributor_gender"]]
     if gender == "M":
         v_gender = 0
@@ -155,6 +157,7 @@ def build_features(line, testing=False):
     else:
         v_gender = 2
 
+    # What type of enitee recieved the money
     rec_type = line[Col_Nums["recipient_type"]]
     if rec_type == "COMM":
         v_rec_type = 0
@@ -163,8 +166,8 @@ def build_features(line, testing=False):
     else:
         v_rec_type = 2
 
+    # Constributors Ideology
     contr_cfscore = line[Col_Nums["contributor_cfscore"]]
-
     if (contr_cfscore > -1.8 and contr_cfscore <= -1.1):
         v_contr_cfscore = -2
 
@@ -271,8 +274,6 @@ def reduce_individuals(a, b):
 
     if b_year not in a["cycles"]:
         a["cycles"][b_year] = b["cycles"][b_year]
-
-
     else:
         a["cycles"][b_year]["amount"] += b["cycles"][b_year]["amount"]
         a["cycles"][b_year]["count"] +=  1
@@ -296,6 +297,7 @@ def create_vectors(line):
     recip_type = values["recipient_type"]
     contr_type = values["contributor_types"]
 
+    # Cotributor Type
     if contr_type == "C":
         v_contrb_type = 0
     elif contr_type == "I":
@@ -312,11 +314,13 @@ def create_vectors(line):
     else:
         v_recip = 2
 
+    # Total Amount Donated Excluding 2012
     previous_amt = 0
     for year in cycles:
         if year != "2012":
             previous_amt += values["cycles"][year]["amount"]
 
+    # Closer on which spectrum
     ob_dif = abs(OBA_CF - cf_score)
     rom_dif = abs(ROM_CF - cf_score)
     if ob_dif < rom_dif: # Ideology more similar to Obama than Romney
@@ -324,9 +328,7 @@ def create_vectors(line):
     else:
         v_nearer = 1
 
-    # Need to bucket
     avg_contributed = values["total_amount"] / len(cycles)
-
     if avg_contributed <= 500:
         v_avg = 0
     elif (avg_contributed > 500) and (avg_contributed <= 5000):
