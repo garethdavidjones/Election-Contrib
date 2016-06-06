@@ -12,7 +12,7 @@ trainingData.cache()
 testData.cache()
 
 model = RandomForest.trainRegressor(trainingData, categoricalFeaturesInfo={},
-                                    numTrees=1000, featureSubsetStrategy="auto",
+                                    numTrees=20, featureSubsetStrategy="auto",
                                     impurity='variance', maxDepth=3, maxBins=32)
 
 # Evaluate model on test instances and compute test error
@@ -25,6 +25,4 @@ print('Test Mean Squared Error = ' + str(testMSE))
 print('Learned regression forest model:')
 print(model.toDebugString())
 
-# Save and load model
-model.save(sc, "target/tmp/myRandomForestRegressionModel")
-sameModel = RandomForestModel.load(sc, "target/tmp/myRandomForestRegressionModel")
+

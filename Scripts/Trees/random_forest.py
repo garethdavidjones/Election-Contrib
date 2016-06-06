@@ -46,5 +46,3 @@ if __name__ == '__main__':
 	
 	input_file = "gs://cs123data/Output/LabeledVectors3/"
     main(input_file)
-
-    Schenectady
