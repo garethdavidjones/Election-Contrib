@@ -74,7 +74,8 @@ def main(main_file, output_directory, year, sc):
 
     from processingTools import data_cleaning, build_features, create_vectors, reduce_individuals
 
-    # Convert from CSV to RDD and make type changes 
+    # Convert from CSV to RDD and make type changes
+    rawRDD = sc.textFile(main_file) 
     full_data = data_cleaning(sc, main_file)
     # print "full_data", full_data.take(2)
     zipData = sc.textFile("gs://cs123data/Auxillary/updated_merger_4.csv")
@@ -108,8 +109,9 @@ def main(main_file, output_directory, year, sc):
 
 if __name__ == '__main__':
 
-    sc = pyspark.SparkContext(appName="partyVectorizer")
+    sc = pyspark.SparkContext(appName="Vectorizer")
     args = sys.argv
+    
     if len(args) < 3:
         print "Not enoughs passed: "
         print "Number Passed {}".format(len(args))
@@ -118,10 +120,10 @@ if __name__ == '__main__':
     else:
         if args[1] == "practice":
             input_file = "gs://cs123data/Data/practice.csv"
-            year = "1984"
+            eval_year = "1984"
         elif args[1] == "full":
             input_file = "gs://cs123data/Data/full_data.csv"
-            year = "2012"
+            eval_year = "2012"
         else:
             print args
             print "Options are full or practice"
