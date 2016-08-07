@@ -154,7 +154,7 @@ def data_cleaning(rawFile):
 def build_features(line):
     """This functions is used to parse transactions so that the information into vectors that can be reduced
     to individuals
-    Note: Each line of the RDD is a transcation. Thus to build predictions about any individual, we need to aggregate
+    Note: Each line of the RDD is a transcation. Thus to build predictions about any individuapl, we need to aggregate
           information about them from accross all years they dontated. This function is combined with a mapper.
 
     Args:
@@ -167,13 +167,14 @@ def build_features(line):
 
     key = line[Col_Nums["bonica_cid"]]  # Each indiviudals unique identifier
     v_cycle = line[Col_Nums["cycle"]]  # The donation cycle
-    v_amount = line[Col_Nums["amount"]]  # The
+    v_amount = line[Col_Nums["amount"]]  # The amount donated
 
     if v_cycle != "2012":
         v_total_amount = v_amount
     else:
         v_total_amount = 0
 
+    #
     contr_type = line[Col_Nums["contributor_type"]]
     if contr_type == "C":
         v_contr_type = 0
@@ -291,7 +292,17 @@ def build_features(line):
     return trans_vector
 
 def reduce_individuals(a, b):
+    """This is the reduce phase that aggregates individuals' transactions
 
+    Args:
+        a: The base key/value pair representing one or more transcations. The value of b will be aggregated
+           with the value of a. The value may contain information on more than one transaction depending 
+           on whether it has been reduced previously.
+        b: A different transaction to be combined with a
+
+    Return:
+        a: The base (key, value) pair following the aggregation with b
+    """
     b_year = list(b["cycles"])[0]
 
     a["total_amount"] += b["total_amount"]
@@ -317,6 +328,10 @@ def reduce_individuals(a, b):
     return a
 
 def create_vectors(line):
+    """
+    Need to preform one hot encoding
+
+    """
 
     values = line[1]
     cid = line[0]
