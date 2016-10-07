@@ -11,15 +11,15 @@ GENERALS = set(range(1980, 2016, 4))
 ALL_YEAR = set(range(1980, 2014, 2))
 RECENT = set(range(2000, 2014, 2))
 
-stateIdeo = {"WA": -2, "OR": -2, "CA": -2, "NV": -2, "ID": 2, "MT": 1,
-             "WY":  2, "UT":  2, "AZ":  1, "ND":  1, "SD": 2, "NE": 2,
-             "CO": -1, "NM": -2, "KS":  2, "OK":  2, "TX": 2, "MN": -2,
-             "IA": -1, "MO":  0, "AR":  2, "LA":  2, "WI": -2, "IL":-2,
-             "MI": -2, "IN":  0, "OH":  0, "KY":  2, "TN": 2, "MS": 2,
-             "AL":  2, "WV":  2, "VA":  0, "NC":  0, "SC": 1, "GA": 1, "FL": 0,
-             "ME": -2, "VT": -2, "MA": -2, "RI": -2, "CT": -2, "NJ":-2,
-             "DE": -2, "MD": -2, "DC": -2, "NY": -2, "PA": -2, "Ak": 2,
-             "HI": -2
+stateIdeo = {"WA": -2, "OR": -2, "CA": -2, "NV": -2, "ID":  2, "MT":  1,
+             "WY":  2, "UT":  2, "AZ":  1, "ND":  1, "SD":  2, "NE":  2,
+             "CO": -1, "NM": -2, "KS":  2, "OK":  2, "TX":  2, "MN": -2,
+             "IA": -1, "MO":  0, "AR":  2, "LA":  2, "WI": -2, "IL": -2,
+             "MI": -2, "IN":  0, "OH":  0, "KY":  2, "TN":  2, "MS":  2,
+             "AL":  2, "WV":  2, "VA":  0, "NC":  0, "SC":  1, "GA":  1, 
+             "FL":  0, "ME": -2, "VT": -2, "MA": -2, "RI": -2, "CT": -2, 
+             "NJ": -2, "DE": -2, "MD": -2, "DC": -2, "NY": -2, "PA": -2,
+             "Ak":  2, "HI": -2
              }
 
 # Column Numbers
@@ -113,18 +113,19 @@ def csv_parser(line):
 
     try:
         rv = list(csv.reader(StringIO(line), delimiter=","))[0]
-        zipCode = rv[Col_Nums["contributor_zipcode"]]
 
-        # Zip Code A responsible for a number of problems
-        if len(zipCode) == 1:
+        zipCode = rv[Col_Nums["contributor_zipcode"]]
+        zip_len = len(zipCode)
+        if zip_len == 1:
             return [1]
-        if len(zipCode) < 5:
-            num_zeros = 5 - len(zipCode)
-            zipCode = str(0) * num_zeros + zipCode 
-        else:
+
+        zipCode = zipCode.zfill(5)
+        if zipCode > 5:
             zipCode = zipCode[:5]
+
         if zipCode in BAD_ZIPS:
             return [1]
+
         rv[Col_Nums["contributor_zipcode"]] = zipCode
         rv[Col_Nums["amount"]] = abs(float(rv[Col_Nums["amount"]])) # some values are negative (?)
         rv[Col_Nums["contributor_cfscore"]] = float(rv[Col_Nums["contributor_cfscore"]])
@@ -204,50 +205,40 @@ def build_features(line):
     # Constributors Ideology
     contr_cfscore = line[Col_Nums["contributor_cfscore"]]
     if (contr_cfscore > -1.8 and contr_cfscore <= -1.1):
-        v_contr_cfscore = -2
-
-    elif (contr_cfscore > -1.1 and contr_cfscore < -0.6):
-        v_contr_cfscore = -1
-
-    elif (contr_cfscore >= -0.6 and contr_cfscore <= 0.4):
         v_contr_cfscore = 0
-
-    elif (contr_cfscore <= 0.8 and contr_cfscore > 0.4):
+    elif (contr_cfscore > -1.1 and contr_cfscore < -0.6):
         v_contr_cfscore = 1
-
-    elif (contr_cfscore <= 1.2 and contr_cfscore > 0.8):
+    elif (contr_cfscore >= -0.6 and contr_cfscore <= 0.4):
         v_contr_cfscore = 2
-
-    elif contr_cfscore > 1.2:
+    elif (contr_cfscore <= 0.8 and contr_cfscore > 0.4):
         v_contr_cfscore = 3
-
+    elif (contr_cfscore <= 1.2 and contr_cfscore > 0.8):
+        v_contr_cfscore = 4
+    elif contr_cfscore > 1.2:
+        v_contr_cfscore = 5
     else:  # Contr_cfscore <= -1.9
-        v_contr_cfscore = -3
+        v_contr_cfscore = 6
 
 
     # Need to analyze whether the same distribution exists for candidates as it does for contributors
     candidate_cfscore = line[Col_Nums["candidate_cfscore"]]
 
     if (candidate_cfscore > -1.8 and candidate_cfscore <= -1.1):
-        v_candidate_cfscore = -2
-
-    elif (candidate_cfscore > -1.1 and candidate_cfscore < -0.6):
-        v_candidate_cfscore = -1
-    elif (candidate_cfscore >= -0.6 and candidate_cfscore <= 0.4):
         v_candidate_cfscore = 0
-
-    elif (candidate_cfscore <= 0.8 and candidate_cfscore > 0.4):
+    elif (candidate_cfscore > -1.1 and candidate_cfscore < -0.6):
         v_candidate_cfscore = 1
-
-    elif (candidate_cfscore <= 1.2 and candidate_cfscore > 0.8):
+    elif (candidate_cfscore >= -0.6 and candidate_cfscore <= 0.4):
         v_candidate_cfscore = 2
-
-    elif candidate_cfscore > 1.2:
+    elif (candidate_cfscore <= 0.8 and candidate_cfscore > 0.4):
         v_candidate_cfscore = 3
-
+    elif (candidate_cfscore <= 1.2 and candidate_cfscore > 0.8):
+        v_candidate_cfscore = 4
+    elif candidate_cfscore > 1.2:
+        v_candidate_cfscore = 5
     else:  # i.e candidate_cfscore <= -1.9
-        v_candidate_cfscore = -3
+        v_candidate_cfscore = 6
     
+    # Just wrong
     if v_candidate_cfscore != v_contr_cfscore:
         ideoDifference = abs(v_candidate_cfscore - v_contr_cfscore)
         if ideoDifference == 1:
@@ -305,7 +296,7 @@ def reduce_individuals(a, b):
     """
     b_year = list(b["cycles"])[0]
 
-    a["total_amount"] += b["total_amount"]
+    a["total_amount"] += b["total_amount"]  
     a["total_counts"] += 1
 
     # Get the most recent characteristics for the individual
@@ -327,45 +318,52 @@ def reduce_individuals(a, b):
 
     return a
 
+
 def create_vectors(line):
     """
     Need to preform one hot encoding
 
-    """
+    If statements that give the columns where there should be a one
 
-    values = line[1]
+    """
+    #   One Hot    Values
+    #  | 0 - 50 |  50-55  |
+    #
+
+    indices = []
+
     cid = line[0]
+    values = line[1]
+
+    # Years Donated
+    # Reserved 0-15
     cycles = set(values["cycles"].keys())
+    years = [(int(x) - 1980)/2 for x in set(values["cycles"].keys())]
+    indices.append(years)
+
+
     num_contributions = values["total_counts"]
     num_recent = len(RECENT - cycles)
     num_general = len(GENERALS - cycles)
+    cf_score = values["contr_cfscore"]
+    
+    # Redo zip code
     zipCode = values["zip"]
 
     gender = values["gender"]
-    cf_score = values["contr_cfscore"]
-    recip_type = values["recipient_type"]
+    indices.append(gender + 16)
+
+    # Contributor Type
     contr_type = values["contributor_types"]
-
-    # Cotributor Type
-    if contr_type == "C":
-        v_contrb_type = 0
-    elif contr_type == "I":
-        v_contrb_type = 1
-    else:
-        v_contrb_type = 2
-
+    indices.append(contr_type + 19)
 
     # Recipient Type
-    if values['recipient_type'] == "COMM":
-        v_recip = 0
-    elif values['recipient_type'] == "CAND":
-        v_recip = 1
-    else:
-        v_recip = 2
+    recip_type = values["recipient_type"]
+    indices.append(recip_type + 22)
 
     # Total Amount Donated Excluding 2012
     previous_amt = 0
-    for year in cycles:
+    for year in list(range(1980, 2012, 2)):
         if year != "2012":
             previous_amt += values["cycles"][year]["amount"]
 
@@ -386,6 +384,13 @@ def create_vectors(line):
         v_avg = 2
     else:
         v_avg = 3
+
+    data = [cid, num_recent, num_general, gender, cf_score, v_avg, 
+            v_nearer, v_contrb_type, v_recip, previous_amt, num_contributions]
+
+    names = 
+
+    features = pd.DataFrame(data, index=0, columns, )
                         #      1            2          3        4       5       6            
     return (zipCode, [cid, num_recent, num_general, gender, cf_score, v_avg, v_nearer, 
                       v_contrb_type, v_recip, previous_amt, num_contributions])   
