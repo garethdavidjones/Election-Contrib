@@ -96,12 +96,26 @@ BAD_ZIPS = set(['00801', '00802', '00803', '00804', '00805', '00820', '00821', '
                 '96799', '96910', '96912', '96913', '96915', '96916', '96917', '96919', '96921', '96923', '96928', 
                 '96929', '96931', '96932', '96939', '96940', '96941', '96942', '96943', '96944', '96950', '96951', 
                 '96952', '96960', '96970'])
+def zip_code_processor(zipCode):
+    pass
 
 def csv_parser(line):
+    """Take in lines of the RDD and parse them
+
+    Args: 
+        line: A string that has csv formating, i.e. every row of the RDD
+
+    Returns:
+        rv: A list containing the values for the different fields of the RDD. Note that in certain cases where the line
+            fails to be parsed because of data error, a list contining a single 1 is returned. These lines are filtered
+            in a following operation
+    """
 
     try:
         rv = list(csv.reader(StringIO(line), delimiter=","))[0]
         zipCode = rv[Col_Nums["contributor_zipcode"]]
+
+        # Zip Code A responsible for a number of problems
         if len(zipCode) == 1:
             return [1]
         if len(zipCode) < 5:
@@ -112,34 +126,55 @@ def csv_parser(line):
         if zipCode in BAD_ZIPS:
             return [1]
         rv[Col_Nums["contributor_zipcode"]] = zipCode
-        rv[Col_Nums["amount"]] = int(abs(float(rv[Col_Nums["amount"]])))  # Conver to Integer to Reduce Memory
-        rv[Col_Nums["contributor_cfscore"]] = float(rv[Col_Nums["contributor_cfscore"]])  # Consider changing to in fro ^ reason
+        rv[Col_Nums["amount"]] = abs(float(rv[Col_Nums["amount"]])) # some values are negative (?)
+        rv[Col_Nums["contributor_cfscore"]] = float(rv[Col_Nums["contributor_cfscore"]])
         rv[Col_Nums["candidate_cfscore"]] = float(rv[Col_Nums["candidate_cfscore"]])
         return rv
+
     except:
-        rv = [1]  # This row will be removed in data cleaning
+        rv = [1]  # The row will be removed in data_cleaning
         return rv
 
-def data_cleaning(sc, file_in):
+def data_cleaning(rawFile):
+    """ The cleaning and loading of the dataset takes place within this function
+    
+    Args:
+        rawFile: The RDD containg the unparsed data
 
-    lines = sc.textFile(file_in)
-    header = lines.first()
-    rm = lines.filter(lambda x: x != header)  # Remove header lines
-    data = rm.map(csv_parser)
-    data = data.filter(lambda x: len(x) == 51)
+    Return:
+        data: The parsed and cleaned RDD
+    """
+
+    header = rawFile.first()
+    rawData = rawFile.filter(lambda x: x != header)  # Remove header lines
+    data = rawData.map(csv_parser)  # Apply csv_parser to every row
+    data = data.filter(lambda x: len(x) == 51) # Remove incomplete rows
     return data
 
-def build_features(line, testing=False):
+def build_features(line):
+    """This functions is used to parse transactions so that the information into vectors that can be reduced
+    to individuals
+    Note: Each line of the RDD is a transcation. Thus to build predictions about any individuapl, we need to aggregate
+          information about them from accross all years they dontated. This function is combined with a mapper.
 
-    key = line[Col_Nums["bonica_cid"]]
-    v_cycle = line[Col_Nums["cycle"]]
-    v_amount = line[Col_Nums["amount"]]
+    Args:
+        line: A line/transaction recorded in the data set
+
+    Returns:
+        trans_vector: A (key, value) pair where the key is the unique identifier associated with any given individual
+        and the value is a dictionary containing the data on the transaction. 
+    """
+
+    key = line[Col_Nums["bonica_cid"]]  # Each indiviudals unique identifier
+    v_cycle = line[Col_Nums["cycle"]]  # The donation cycle
+    v_amount = line[Col_Nums["amount"]]  # The amount donated
 
     if v_cycle != "2012":
         v_total_amount = v_amount
     else:
         v_total_amount = 0
 
+    #
     contr_type = line[Col_Nums["contributor_type"]]
     if contr_type == "C":
         v_contr_type = 0
@@ -253,11 +288,21 @@ def build_features(line, testing=False):
                         {"count": 1, "amount": v_amount,
                             1: {"label": label, "candidate_cfscore": v_candidate_cfscore}}}}
 
-    vector = (key, features)
-    return vector
+    trans_vector = (key, features)
+    return trans_vector
 
 def reduce_individuals(a, b):
+    """This is the reduce phase that aggregates individuals' transactions
 
+    Args:
+        a: The base key/value pair representing one or more transcations. The value of b will be aggregated
+           with the value of a. The value may contain information on more than one transaction depending 
+           on whether it has been reduced previously.
+        b: A different transaction to be combined with a
+
+    Return:
+        a: The base (key, value) pair following the aggregation with b
+    """
     b_year = list(b["cycles"])[0]
 
     a["total_amount"] += b["total_amount"]
@@ -283,6 +328,10 @@ def reduce_individuals(a, b):
     return a
 
 def create_vectors(line):
+    """
+    Need to preform one hot encoding
+
+    """
 
     values = line[1]
     cid = line[0]
