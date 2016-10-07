@@ -22,7 +22,7 @@ Col_Nums = {"cycle":0, "transaction_id":1, "transaction_type":2,"amount":3,"date
             "efec_memo":45,"efec_memo2":46,"efec_transaction_id_orig":47, "efec_org_orig":48,
             "efec_comid_orig":49,"efec_form_type":50 }
 
-def evaluate_transactions(line):
+def create_labels(line):
 
     key = line[Col_Nums["bonica_cid"]]
     party = line[Col_Nums["recipient_party"]]  # 100 is dem; 200 is rep; 328 is ind
@@ -70,7 +70,7 @@ def parse_zipcodes(line):
     values = csv_line[2:]
     return (zipCode, values)
 
-def main(main_file, output_directory, year, sc):
+def main(main_file, output_directory, target_year, sc):
 
     from processingTools import data_cleaning, build_features, create_vectors, reduce_individuals
 
@@ -78,28 +78,29 @@ def main(main_file, output_directory, year, sc):
     rawRDD = sc.textFile(main_file) 
     full_data = data_cleaning(sc, main_file)
     # print "full_data", full_data.take(2)
-    zipData = sc.textFile("gs://cs123data/Auxillary/updated_merger_4.csv")
-    zipData = zipData.map(parse_zipcodes)
+    #zipData = sc.textFile("gs://cs123data/Auxillary/updated_merger_4.csv")
+    #zipData = zipData.map(parse_zipcodes)
 
-    zipData.cache()  # Look into doing this efficiently
+    #zipData.cache()  # Look into doing this efficiently
     
-    # Evaluate 2012 Testing Data
-    data_2012 = full_data.filter(lambda x: x[0] == year)  # Should probably filter out other transaction types in datacleaning
-    evaluated_data = data_2012.map(evaluate_transactions)  # Determine the label for each transaction
-    evaluations = evaluated_data.reduceByKey(lambda x, y: x)  # An RDD of Unique Keys
-    # print "evals", evaluations.take(2)
+    # Set Labels for Target Year
+    target_data = full_data.filter(lambda x: x[0] == target_year)  # Should probably filter out other transaction types in datacleaning
+    evaluated_data = target_data.map(create_labels)  # Determine the label for each transaction
+    target_contributors = evaluated_data.keys()  # An RDD of Unique Keys
 
     # Create Vectors
     transactions = full_data.map(build_features)  # Collect Information On Every Transaction
     individuals = transactions.reduceByKey(reduce_individuals)  # Turn Each person into a vector based on their contributions
 
     transformed = individuals.map(create_vectors)
-    merged = transformed.leftOuterJoin(zipData)
-    bypass = merged.filter(lambda x: x[1]   [1] != None)
+#    merged = transformed.leftOuterJoin(zipData)
+#    bypass = merged.filter(lambda x: x[1]   [1] != None)
+    
+    # finalize vectors will need to be redone
     vectorized = bypass.map(finalize_vectors)   
 
-    non_contributors = vectorized.subtractByKey(evaluations)  # Non-Contributors Are Individuals Who Don't Appear in 
-    contributors = vectorized.join(evaluations)
+    non_contributors = vectorized.subtractByKey(target_contributors)  # Non-Contributors Are Individuals Who Don't Appear in 
+    contributors = vectorized.join(target_contributors)
     labeled_non_contributors = non_contributors.map(lambda x: LabeledPoint(0.0, x[1])) 
     labeled_contributors = contributors.map(lambda x: LabeledPoint(x[1][1], x[1][0]))
     # Make final combination
@@ -120,14 +121,14 @@ if __name__ == '__main__':
     else:
         if args[1] == "practice":
             input_file = "gs://cs123data/Data/practice.csv"
-            eval_year = "1984"
+            target_year = "1984"
         elif args[1] == "full":
             input_file = "gs://cs123data/Data/full_data.csv"
-            eval_year = "2012"
+            target_year = "2012"
         else:
             print args
             print "Options are full or practice"
             sys.exit()
 
         output_directory = "gs://cs123data/Output/" + args[2]
-        main(input_file, output_directory, year, sc)
+        main(input_file, output_directory, target_year, sc)
